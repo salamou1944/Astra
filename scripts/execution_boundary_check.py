@@ -1,9 +1,12 @@
 """Offline execution-boundary verification. Never submits an order."""
 import json
 from pathlib import Path
-from astra.execution.kraken import KrakenExecutionConfig, KrakenSpotExecutor
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from astra.execution.kraken import KrakenExecutionConfig, KrakenSpotExecutor
+
 ex = KrakenSpotExecutor(KrakenExecutionConfig(api_key="", api_secret="", live_enabled=False))
 order = ex.build_add_order(pair="XBTUSD", side="buy", ordertype="market", volume="0.0001")
 result = ex.submit_if_authorized(**order)
