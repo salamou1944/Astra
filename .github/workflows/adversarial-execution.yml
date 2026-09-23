@@ -1,0 +1,29 @@
+name: ASTRA ADVERSARIAL EXECUTION
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "astra/execution/**"
+      - "scripts/adversarial_execution_ci.py"
+      - ".github/workflows/adversarial-execution.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adversarial:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Run adversarial execution checks
+        run: python scripts/adversarial_execution_ci.py
+      - name: Archive evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: astra-adversarial-execution-evidence
+          path: evidence/adversarial_execution_ci.json
