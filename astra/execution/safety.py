@@ -61,6 +61,12 @@ def reconcile(
     remote_ids = set(exchange_orders)
     mismatches.extend(f"missing_exchange_order:{x}" for x in sorted(local_ids - remote_ids))
     mismatches.extend(f"unknown_exchange_order:{x}" for x in sorted(remote_ids - local_ids))
+    for order_id in sorted(local_ids & remote_ids):
+        local = local_orders[order_id]
+        remote = exchange_orders[order_id]
+        for field in ("status", "filled", "remaining", "quantity"):
+            if field in local and field in remote and str(local[field]) != str(remote[field]):
+                mismatches.append(f"order_field_mismatch:{order_id}:{field}")
     if local_positions != exchange_positions:
         mismatches.append("position_mismatch")
     if local_balances != exchange_balances:
