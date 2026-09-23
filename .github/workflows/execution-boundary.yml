@@ -1,4 +1,4 @@
-name: ASTRA EXECUTION BOUNDARY CHECK
+name: ASTRA EXECUTION PREFLIGHT
 on:
   push:
     branches: [main]
@@ -6,6 +6,7 @@ on:
       - "astra/execution/**"
       - "tests/test_kraken_execution.py"
       - "scripts/execution_boundary_check.py"
+      - "scripts/execution_live_preflight.py"
       - ".github/workflows/execution-boundary.yml"
   workflow_dispatch:
 permissions:
@@ -18,11 +19,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Run safety tests
+      - name: Safety tests
         run: python -m unittest discover -s tests -p "test_kraken_execution.py" -v
-      - name: Run offline boundary check
+      - name: Offline boundary
         run: python scripts/execution_boundary_check.py
+      - name: Non-trading preflight
+        run: python scripts/execution_live_preflight.py
       - uses: actions/upload-artifact@v4
         with:
-          name: astra-execution-boundary-evidence
-          path: evidence/execution_boundary_check.json
+          name: astra-execution-preflight-evidence
+          path: evidence/execution_*.json
