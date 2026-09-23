@@ -1,0 +1,67 @@
+{
+  "candidate_count": 123,
+  "holdout_end_index": 720,
+  "holdout_start_index": 621,
+  "holdout_tests": {
+    "BTCUSD": {
+      "max_drawdown_pct": 7.0021,
+      "return_pct": 15.8531,
+      "trades": 11
+    },
+    "ETHUSD": {
+      "max_drawdown_pct": 5.629,
+      "return_pct": 49.5307,
+      "trades": 3
+    },
+    "LTCUSD": {
+      "max_drawdown_pct": 9.7442,
+      "return_pct": 16.8308,
+      "trades": 9
+    },
+    "SOLUSD": {
+      "max_drawdown_pct": 16.7243,
+      "return_pct": 27.8479,
+      "trades": 15
+    }
+  },
+  "live_money_execution": false,
+  "params": {
+    "threshold": 0,
+    "window": 30
+  },
+  "profitability": "UNVERIFIED",
+  "research_period_end_index": 620,
+  "selected": "long_momentum",
+  "selection_folds": 3,
+  "selection_frequency": 3,
+  "selection_history": [
+    {
+      "fold": 1,
+      "params": {
+        "threshold": 0,
+        "window": 30
+      },
+      "selected": "long_momentum",
+      "stability": 10.7621
+    },
+    {
+      "fold": 2,
+      "params": {
+        "threshold": 10,
+        "window": 20
+      },
+      "selected": "long_momentum",
+      "stability": -9.7081
+    },
+    {
+      "fold": 3,
+      "params": {
+        "threshold": 0,
+        "window": 120
+      },
+      "selected": "long_momentum",
+      "stability": -1.1355
+    }
+  ],
+  "status": "PROVEN_HOLDOUT_VALIDATION"
+}
