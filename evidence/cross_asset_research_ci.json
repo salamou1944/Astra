@@ -36,7 +36,7 @@
       },
       "fold": 1,
       "params": {
-        "threshold": 0.0,
+        "threshold": 0,
         "window": 30
       },
       "selected": "long_momentum",
@@ -74,7 +74,7 @@
       },
       "fold": 2,
       "params": {
-        "threshold": 10.0,
+        "threshold": 10,
         "window": 20
       },
       "selected": "long_momentum",
@@ -90,29 +90,29 @@
     {
       "asset_tests": {
         "BTCUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
+          "max_drawdown_pct": 0,
+          "return_pct": 0,
           "trades": 0
         },
         "ETHUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
+          "max_drawdown_pct": 0,
+          "return_pct": 0,
           "trades": 0
         },
         "LTCUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
+          "max_drawdown_pct": 0,
+          "return_pct": 0,
           "trades": 0
         },
         "SOLUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
+          "max_drawdown_pct": 0,
+          "return_pct": 0,
           "trades": 0
         }
       },
       "fold": 3,
       "params": {
-        "threshold": 0.0,
+        "threshold": 0,
         "window": 120
       },
       "selected": "long_momentum",
@@ -179,6 +179,8 @@
     "max_asset_drawdown_pct": 37.3515,
     "mean_asset_fold_return_pct": -1.1939,
     "passed_gate": false,
-    "positive_asset_fold_ratio": 0.25
+    "positive_asset_fold_ratio": 0.25,
+    "buy_hold_aggregate_return_pct": -40.1355,
+    "strategy_vs_buy_hold_pct": 33.264
   }
 }
