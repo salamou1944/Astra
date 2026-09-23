@@ -1,0 +1,10 @@
+{
+  "dataset": null,
+  "experiment": {"bars":900,"seed":19,"strategy":{"fast":12,"slow":40},"type":"synthetic_validation","walk_forward":{"embargo":5,"step":100,"test":100,"train":300}},
+  "generated_at": "2026-09-23T02:44:17.062834+00:00",
+  "notes": ["Synthetic deterministic market only; not profitability evidence.","ShadowSession records hypothetical actions and submits no broker orders."],
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "result": {"shadow":{"events":900,"final_equity":1.9618036282770974,"live_money_execution":false,"orders_submitted":0},"walk_forward":{"aggregate_return_pct":50.1316,"folds":5,"max_drawdown_pct":1.8877,"positive_fold_ratio":1.0}},
+  "status": "PROVEN_LOCAL_ONLY"
+}

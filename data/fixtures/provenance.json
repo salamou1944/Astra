@@ -1,0 +1,14 @@
+{
+  "dataset_id": "alpaca-docs-btc-usd-2022-09-fixture",
+  "source": "Alpaca official documentation",
+  "source_url": "https://docs.alpaca.markets/us/docs/getting-started-with-alpaca-market-data",
+  "retrieved_at": "2026-09-23T02:22:04.524210Z",
+  "symbol": "BTC/USD",
+  "timeframe": "1Day",
+  "start": "2022-09-01T05:00:00Z",
+  "end": "2022-09-06T05:00:00Z",
+  "rows": 6,
+  "sha256": "c82570182bc19c9c87132183dbbacb7bb7c23c7344de5f30427accdf0c47fbb0",
+  "status": "SOURCE_VERIFIED",
+  "note": "Fixture reproduced from the official documentation example; not sufficient for strategy profitability claims."
+}

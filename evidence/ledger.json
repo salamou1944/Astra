@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-09-22T23:20:48.314293+00:00",
+  "records": [
+    {"name":"deterministic_core","status":"PROVEN","maturity":"TESTED","detail":"9 local tests passed, including deterministic core and research layers"},
+    {"name":"walk_forward","status":"PROVEN","maturity":"TESTED","detail":"6 chronological test folds executed on deterministic research dataset"},
+    {"name":"adversarial_gate","status":"PROVEN","maturity":"TESTED","detail":"parameter perturbation gate passed with survival ratio 1.00 on deterministic dataset"},
+    {"name":"alpaca_adapter","status":"IMPLEMENTED","maturity":"IMPLEMENTED","detail":"public Alpaca crypto historical adapter and OHLCV validation implemented"},
+    {"name":"alpaca_provider_runtime","status":"BLOCKED","maturity":"RUNTIME VERIFIED","detail":"outbound DNS/network unavailable in execution environment"},
+    {"name":"real_money_execution","status":"DISABLED","maturity":"HARDENED","detail":"no live-money execution path enabled"}
+  ]
+}

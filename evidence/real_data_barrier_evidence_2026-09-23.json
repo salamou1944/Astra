@@ -1,0 +1,30 @@
+{
+  "artifact": "astra_quant_lab_v1_7_0.zip",
+  "artifact_sha256": "a8041699d6e849788c6ecc37af721d9f4c0e3352e0d904fdd87d20bdfdba40fb",
+  "run_id": "astra-real-data-barrier-2026-09-23-final",
+  "final_status": "BLOCKED",
+  "failure_class": "NO_NETWORK_CAPABLE_EXECUTION_BOUNDARY_AVAILABLE",
+  "local_environment": {
+    "dns": "BLOCKED",
+    "direct_https_egress": "BLOCKED",
+    "astra_cli_alpaca_check": "BLOCKED",
+    "local_regression": "49 passed"
+  },
+  "repair_attempts": [
+    {"boundary":"Replit","action":"create isolated network-capable ASTRA runner","result":"BLOCKED","reason":"requires_active_subscription"},
+    {"boundary":"Railway","action":"create isolated ASTRA REAL DATA Runner project","result":"BLOCKED","reason":"Free plan resource provision limit exceeded"}
+  ],
+  "pass_gate": {
+    "real_external_source": false,
+    "real_network_request": false,
+    "real_data_received": false,
+    "provenance_verified": false,
+    "hash_verified": false,
+    "data_integrity_verified": false,
+    "astra_processed_real_data": false,
+    "independent_verifier_passed": false,
+    "evidence_persisted": true
+  },
+  "remaining_blocker": "The current sandbox has no outbound Internet egress, and the available external execution providers cannot provision a new runtime under the currently connected account plans. A network-capable execution boundary is required before REAL_DATA can become PASS.",
+  "live_money_execution": false
+}
