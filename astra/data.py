@@ -98,6 +98,7 @@ def audit_market_quality(
     interval_seconds: int | None = None,
     stale_after_seconds: int | None = None,
     max_return: float | None = None,
+    reference_time: datetime | None = None,
 ) -> dict:
     """Detect temporal gaps, stale tails and extreme one-bar returns.
 
@@ -128,7 +129,10 @@ def audit_market_quality(
                     "expected_seconds": expected,
                 })
     if stale_after_seconds is not None and parsed:
-        age = (datetime.now(timezone.utc) - parsed[-1][1]).total_seconds()
+        now = reference_time or datetime.now(timezone.utc)
+        if now.tzinfo is None:
+            raise ValueError("reference_time must include timezone information")
+        age = (now.astimezone(timezone.utc) - parsed[-1][1]).total_seconds()
         stale = age > stale_after_seconds
     if max_return is not None:
         for prev_bar, cur_bar in zip((x[0] for x in parsed), (x[0] for x in parsed[1:])):
