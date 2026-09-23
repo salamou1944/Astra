@@ -1,0 +1,29 @@
+name: ASTRA EXCHANGE TEST
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "astra/execution/**"
+      - "scripts/exchange_test_ci.py"
+      - ".github/workflows/exchange-test.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exchange-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Test Kraken public exchange boundary
+        run: python scripts/exchange_test_ci.py
+      - name: Archive evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: astra-exchange-test-evidence
+          path: evidence/exchange_test_ci.json
