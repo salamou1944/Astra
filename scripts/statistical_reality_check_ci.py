@@ -176,7 +176,7 @@ def main():
         "equal_weight_compounded_return_pct": round(combined_strategy * 100, 4),
         "buy_hold_equal_weight_compounded_return_pct": round(combined_bh * 100, 4),
         "equal_weight_excess_compounded_return_pct": round((combined_strategy - combined_bh) * 100, 4),
-        "multiple_testing": max_candidate_null_diagnostic(bh_returns(data["BTCUSD"][h0 - HOLDOUT:h0 + HOLDOUT])),
+        "multiple_testing": max_candidate_null_diagnostic({"BTCUSD": bh_returns(data["BTCUSD"][h0 - HOLDOUT:h0 + HOLDOUT])}),
         "interpretation": {
             "profitability": "UNVERIFIED",
             "alpha": "UNVERIFIED",
