@@ -39,7 +39,13 @@ def rank_train(data,start):
    rb=backtest_signals(b,signal_for(b,name,p),fee=FEE,slip=SLIP)
    agg=((1+ra["return_pct"]/100)*(1+rb["return_pct"]/100)-1)*100
    sub.append((ra["return_pct"],rb["return_pct"],max(ra["max_drawdown_pct"],rb["max_drawdown_pct"]),agg))
-  rows.append((min(x for q in sub for x in q[:2]),-max(x[2] for x in sub),mean(x[3] for x in sub),name,p))
+  total_trades=0
+  for sym,bars in data.items():
+   a=bars[start:start+150]; b=bars[start+150:start+TRAIN]
+   total_trades += backtest_signals(a,signal_for(a,name,p),fee=FEE,slip=SLIP)["trades"] + backtest_signals(b,signal_for(b,name,p),fee=FEE,slip=SLIP)["trades"]
+  if total_trades >= 8:
+   rows.append((min(x for q in sub for x in q[:2]),-max(x[2] for x in sub),mean(x[3] for x in sub),name,p,total_trades))
+ if not rows: raise RuntimeError("no active candidate met the training activity floor")
  return max(rows,key=lambda x:x[:3])
 def run():
  data={s:load(s) for s in ASSETS}
@@ -54,7 +60,7 @@ def run():
    context_start=max(0,test_start-lookback)
    context=bars[context_start:test_end]; off=test_start-context_start
    asset_tests[sym]=backtest_signals(context[off:],signal_for(context,name,p)[off:],fee=FEE,slip=SLIP)
-  folds.append({"fold":len(folds)+1,"train_start":start,"train_end":start+TRAIN-1,"test_start":start+TRAIN+EMBARGO,"test_end":start+TRAIN+EMBARGO+TEST-1,"selected":name,"params":p,"train_stability_score":selected[0],"train_max_dd":-selected[1],"train_mean_aggregate_return_pct":selected[2],"asset_tests":asset_tests})
+  folds.append({"fold":len(folds)+1,"train_start":start,"train_end":start+TRAIN-1,"test_start":start+TRAIN+EMBARGO,"test_end":start+TRAIN+EMBARGO+TEST-1,"selected":name,"params":p,"train_stability_score":selected[0],"train_max_dd":-selected[1],"train_mean_aggregate_return_pct":selected[2],"train_activity_trades":selected[5],"asset_tests":asset_tests})
   start+=STEP
  fold_returns=[mean(v["return_pct"] for v in f["asset_tests"].values()) for f in folds]
  all_asset_returns=[v["return_pct"] for f in folds for v in f["asset_tests"].values()]
