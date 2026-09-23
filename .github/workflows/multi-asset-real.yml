@@ -1,0 +1,23 @@
+name: ASTRA MULTI-ASSET REAL DATA
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/multi_asset_real_ci.py
+      - name: Persist evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/real/kraken_*_1d.csv evidence/multi_asset_real_data_ci.json
+          git diff --cached --quiet || git commit -m "evidence(astra): persist multi-asset real data [skip ci]"
+          git push
