@@ -126,9 +126,10 @@ def main():
     bh_asset_returns = []
     for sym, full in data.items():
         # Keep the final 100 bars untouched: this script performs no selection or tuning.
-        ctx = full[h0 - 120:h0 + HOLDOUT]
-        sr = path_returns(ctx)[120:]
-        br = bh_returns(ctx)[119:]
+        ctx = full[h0 - 120:h0 + HOLDOUT + 1]
+        # Align both series to the exact holdout return intervals: h0->h0+1 ... h0+99->h0+100.
+        sr = path_returns(ctx)[121:]
+        br = bh_returns(ctx)[120:]
         if len(sr) != HOLDOUT or len(br) != HOLDOUT:
             raise RuntimeError(f"unexpected holdout length for {sym}: {len(sr)} {len(br)}")
         diff = [a - b for a, b in zip(sr, br)]
