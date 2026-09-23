@@ -46,3 +46,8 @@ See `VERIFICATION.md`, `REAL_DATA_RUNBOOK.md`, and the persisted evidence under 
 ## Untouched holdout validation
 
 A final 100-bar period (indices 621-720) was reserved and not used for candidate selection. The repeatedly selected `long_momentum(window=30, threshold=0)` was evaluated on that holdout across BTC/USD, ETH/USD, SOL/USD, and LTC/USD. The equal-weight compounded strategy return was **26.8301%**, versus **40.5521%** for buy-and-hold over the same asset holdout; maximum asset drawdown was **16.7243%**. This is validation evidence, not a profitability claim.
+
+
+## Statistical reality check
+
+The fixed holdout champion was subjected to a statistical reality check without tuning on the holdout. A 5-day moving-block bootstrap (10,000 replicates) produced a 95% CI for the paired daily strategy-minus-buy-and-hold mean of **-0.262287 to +0.051426 percentage points/day**. Asset-level sign-flip tests were non-significant (BTC 0.435628, ETH 0.976051, LTC 0.311234, SOL 0.181791). The equal-weight compounded holdout result remained **26.8301%** for the strategy versus **39.7863%** for buy-and-hold. A separate max-of-123 null-bootstrap is recorded only as an **approximate multiple-testing diagnostic**, not a formal White Reality Check; its approximate p-value was **1.0**. Selection bias remains material because 123 candidates were screened before the fixed champion was tested. Profitability/alpha therefore remains **UNVERIFIED**, and live-money execution remains **OFF**.
