@@ -6,7 +6,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from astra.core import Bar,backtest_signals,backtest
-from astra.strategies import trend,mean_reversion,breakout,long_momentum
+from astra.strategies import trend,mean_reversion,breakout,long_momentum,long_trend
 
 DATA=ROOT/"data/real/kraken_BTCUSD_1d.csv"
 OUT=ROOT/"evidence/real_data_candidate_research_ci.json"
@@ -35,9 +35,12 @@ for w in (10,15,20,30,40,60,80):
 for w in (10,20,30,40,60,80,120):
  for threshold in (0.0,2.0,5.0,10.0):
   CANDIDATES.append(("long_momentum",{"window":w,"threshold":threshold},long_momentum,w))
+for f in (10,20,30,40):
+ for s in (50,80,120,160):
+  if f<s: CANDIDATES.append(("long_trend",{"fast":f,"slow":s},long_trend,s))
 
 def signal_for(bars,name,params):
- return {"trend":trend,"mean_reversion":mean_reversion,"breakout":breakout,"long_momentum":long_momentum}[name](bars,**params)
+ return {"trend":trend,"mean_reversion":mean_reversion,"breakout":breakout,"long_momentum":long_momentum,"long_trend":long_trend}[name](bars,**params)
 
 def rank_train(bars):
  rows=[]
