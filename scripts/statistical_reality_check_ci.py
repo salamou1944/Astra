@@ -139,7 +139,7 @@ def main():
             "daily_mean_strategy": round(mean(sr), 8),
             "daily_mean_buy_hold": round(mean(br), 8),
             "daily_mean_excess": round(mean(diff), 8),
-            "sign_flip_p_value": round(sign_flip_pvalue := sign_flip_pvalue(diff), 6),
+            "sign_flip_p_value": round(sign_flip_pvalue(diff), 6),
         }
         paired.extend(diff)
         strat_asset_returns.append(compounded(sr))
