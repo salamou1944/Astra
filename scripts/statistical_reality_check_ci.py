@@ -5,12 +5,13 @@ from statistics import mean
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from astra.core import Bar, backtest_signals
+from astra.core import Bar
 from astra.strategies import long_momentum
 
 FEE = 0.0005
 SLIP = 0.0002
 HOLDOUT = 100
+HOLDOUT_RETURNS = HOLDOUT - 1
 ASSETS = ("BTCUSD", "ETHUSD", "SOLUSD", "LTCUSD")
 B = FEE + SLIP
 SEED = 20260923
@@ -26,8 +27,6 @@ def signal(bars):
     return long_momentum(bars, window=30, threshold=0)
 
 def path_returns(bars):
-    # Reconstruct the same close-to-close equity path as the production backtester,
-    # including execution costs, and expose daily multiplicative returns for bootstrap.
     sig = signal(bars)
     equity = 1.0
     pos = 0.0
@@ -78,8 +77,6 @@ def bootstrap_stat(xs, stat_fn, rng, reps=BOOT):
     return lo, hi
 
 def sign_flip_pvalue(xs):
-    # Paired daily strategy-minus-buy-and-hold returns. Exact permutation is 2^N
-    # intractable, so use a deterministic Monte Carlo sign-flip test.
     rng = random.Random(SEED + 17)
     observed = mean(xs)
     extreme = 0
@@ -91,10 +88,6 @@ def sign_flip_pvalue(xs):
     return (extreme + 1) / (reps + 1)
 
 def max_candidate_null_diagnostic(asset_daily):
-    # A simple multiple-testing diagnostic: for each bootstrap replicate, resample
-    # the common daily market-return blocks and ask how large the best of 123
-    # candidate-like zero-cost mean statistics could appear by chance. This is
-    # intentionally a diagnostic, not a formal White Reality Check implementation.
     rng = random.Random(SEED + 99)
     observed_best = max(abs(mean(v)) for v in asset_daily.values())
     maxima = []
@@ -103,7 +96,6 @@ def max_candidate_null_diagnostic(asset_daily):
         m = 0.0
         for _c in range(CANDIDATE_COUNT):
             sample = block_bootstrap(next(iter(asset_daily.values())), n, rng)
-            # Random signs represent a null with no directional edge.
             m = max(m, abs(mean((x if rng.random() < 0.5 else -x) for x in sample)))
         maxima.append(m)
     maxima.sort()
@@ -125,13 +117,13 @@ def main():
     strat_asset_returns = []
     bh_asset_returns = []
     for sym, full in data.items():
-        # Keep the final 100 bars untouched: this script performs no selection or tuning.
+        # Final 100 bars are untouched; 100 bars contain 99 close-to-close return intervals.
         ctx = full[h0 - 120:h0 + HOLDOUT + 1]
-        # Align both series to the exact holdout return intervals: h0->h0+1 ... h0+99->h0+100.
+        # Exact holdout intervals: h0->h0+1 ... h0+98->h0+99.
         sr = path_returns(ctx)[121:]
         br = bh_returns(ctx)[120:]
-        if len(sr) != HOLDOUT or len(br) != HOLDOUT:
-            raise RuntimeError(f"unexpected holdout length for {sym}: {len(sr)} {len(br)}")
+        if len(sr) != HOLDOUT_RETURNS or len(br) != HOLDOUT_RETURNS:
+            raise RuntimeError(f"unexpected holdout return length for {sym}: {len(sr)} {len(br)}")
         diff = [a - b for a, b in zip(sr, br)]
         results[sym] = {
             "strategy_return_pct": round(compounded(sr) * 100, 4),
@@ -159,6 +151,8 @@ def main():
             "rows_per_asset": n,
             "holdout_start_index": h0,
             "holdout_end_index": n - 1,
+            "holdout_bars": HOLDOUT,
+            "holdout_return_intervals": HOLDOUT_RETURNS,
             "selection_touched_holdout": False,
         },
         "fixed_strategy": {"name": "long_momentum", "window": 30, "threshold": 0, "candidate_count_before_selection": CANDIDATE_COUNT},
