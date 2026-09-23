@@ -1,0 +1,26 @@
+name: ASTRA RECONCILIATION KILL SWITCH
+on:
+  push:
+    branches: [main]
+    paths:
+      - "astra/execution/safety.py"
+      - "tests/test_execution_safety.py"
+      - "scripts/reconciliation_killswitch_ci.py"
+      - ".github/workflows/reconciliation-killswitch.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reconciliation-killswitch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m unittest discover -s tests -p "test_execution_safety.py" -v
+      - run: python scripts/reconciliation_killswitch_ci.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: astra-reconciliation-killswitch-evidence
+          path: evidence/reconciliation_killswitch_ci.json
