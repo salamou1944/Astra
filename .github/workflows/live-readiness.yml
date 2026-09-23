@@ -1,0 +1,27 @@
+name: ASTRA LIVE READINESS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "astra/execution/safety.py"
+      - "scripts/live_readiness_ci.py"
+      - ".github/workflows/live-readiness.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/live_readiness_ci.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: astra-live-readiness-evidence
+          path: evidence/live_readiness_ci.json
