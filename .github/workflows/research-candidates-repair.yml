@@ -16,11 +16,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+      - run: python scripts/multi_asset_real_ci.py
       - run: python scripts/research_candidate_real_ci.py
       - name: Persist candidate evidence
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add evidence/real_data_candidate_research_ci.json
+          git add data/real/kraken_*_1d.csv evidence/multi_asset_real_data_ci.json evidence/real_data_candidate_research_ci.json
           git diff --cached --quiet || git commit -m "evidence(astra): persist corrected candidate research [skip ci]"
           git push
