@@ -41,7 +41,7 @@
       "name": "profitability_alpha",
       "status": "UNVERIFIED",
       "maturity": "NOT_PROVEN",
-      "detail": "UNVERIFIED: cross-asset research gates failed and the untouched holdout underperformed buy-and-hold"
+      "detail": "UNVERIFIED: cross-asset research gates failed, principled hypothesis validation was negative, and the untouched holdout underperformed buy-and-hold"
     },
     {
       "name": "real_money_execution",
@@ -60,6 +60,12 @@
       "status": "PROVEN_STATISTICAL_REALITY_CHECK",
       "maturity": "E2E",
       "detail": "Untouched 100-bar multi-asset holdout: strategy 26.8301% vs buy-and-hold 39.7863%; paired daily excess mean 95% moving-block bootstrap CI -0.262287 to 0.051426 percentage points/day; sign-flip tests non-significant; max-of-123 null bootstrap diagnostic approximate p=1.0; selection-bias risk remains HIGH; profitability/alpha UNVERIFIED"
+    },
+    {
+      "name": "principled_hypothesis_test",
+      "status": "PROVEN_NEGATIVE_VALIDATION",
+      "maturity": "E2E",
+      "detail": "Pre-registered 63-candidate three-family hypothesis test on real 4-asset data; selected vol_filtered_momentum(w=60,t=5,v=0.025) using research only; validation positive-asset ratio 0.25; final 100-bar holdout strategy 17.9080% equal-weight compounded vs 40.5521% buy-and-hold; profitability/alpha UNVERIFIED; live money OFF"
     }
   ]
 }
