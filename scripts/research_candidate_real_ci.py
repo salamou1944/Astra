@@ -32,6 +32,9 @@ for w in (10,15,20,30,40,60):
   CANDIDATES.append(("mean_reversion",{"window":w,"z":z},mean_reversion,w))
 for w in (10,15,20,30,40,60,80):
  CANDIDATES.append(("breakout",{"window":w},breakout,w))
+for w in (10,20,30,40,60,80,120):
+ for threshold in (0.0,2.0,5.0,10.0):
+  CANDIDATES.append(("long_momentum",{"window":w,"threshold":threshold},long_momentum,w))
 
 def signal_for(bars,name,params):
  return {"trend":trend,"mean_reversion":mean_reversion,"breakout":breakout,"long_momentum":long_momentum}[name](bars,**params)
