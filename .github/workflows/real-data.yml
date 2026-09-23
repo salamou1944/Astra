@@ -1,0 +1,29 @@
+name: ASTRA REAL_DATA
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/real-data.yml"
+      - "scripts/real_data_ci.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Acquire and verify real market data
+        run: python scripts/real_data_ci.py
+      - name: Persist REAL_DATA evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/real evidence/real_data_ci.json
+          git diff --cached --quiet || git commit -m "evidence(astra): persist verified real market data [skip ci]"
+          git push
