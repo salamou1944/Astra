@@ -41,10 +41,19 @@ def signal_for(bars,name,params):
 
 def rank_train(bars):
  rows=[]
+ mid=len(bars)//2
+ a=bars[:mid]; b=bars[mid:]
  for name,p,_,_ in CANDIDATES:
-  r=backtest_signals(bars,signal_for(bars,name,p),fee=FEE,slip=SLIP)
-  rows.append((r["return_pct"],-r["max_drawdown_pct"],-r["trades"],name,p,r))
- return max(rows,key=lambda x:x[:3])
+  ra=backtest_signals(a,signal_for(a,name,p),fee=FEE,slip=SLIP)
+  rb=backtest_signals(b,signal_for(b,name,p),fee=FEE,slip=SLIP)
+  # Stability-first selection: reward consistency across two chronological
+  # subwindows, then drawdown control, then aggregate return. Test data is untouched.
+  wealth=(1+ra["return_pct"]/100)*(1+rb["return_pct"]/100)
+  aggregate=(wealth-1)*100
+  score=min(ra["return_pct"],rb["return_pct"])
+  dd=max(ra["max_drawdown_pct"],rb["max_drawdown_pct"])
+  rows.append((score,-dd,aggregate,-(ra["trades"]+rb["trades"]),name,p,{"return_pct":round(aggregate,4),"max_drawdown_pct":dd,"trades":ra["trades"]+rb["trades"]}))
+ return max(rows,key=lambda x:x[:4])
 
 def run():
  rows=list(csv.DictReader(DATA.open(encoding="utf-8")))
