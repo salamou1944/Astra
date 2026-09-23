@@ -3,7 +3,7 @@ import csv,json,hashlib
 from pathlib import Path
 from astra.core import Bar,backtest,adversary
 from astra.research import Experiment,walk_forward,cost_stress
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[1]\nsys.path.insert(0,str(ROOT))
 DATA=ROOT/"data/real/kraken_BTCUSD_1d.csv"; OUT=ROOT/"evidence/real_data_research_ci.json"
 def sha256(p):
  h=hashlib.sha256()
