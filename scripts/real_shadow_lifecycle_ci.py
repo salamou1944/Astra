@@ -51,12 +51,12 @@ def main():
                     risk_valid=True, execution_valid=True,
                     reconciliation_valid=True, human_approval=False,
                 )
-                if not gate_decision:
-                    # Record the signal as observed but do not submit to any broker.
-                    rejected += 1
-                else:
-                    lifecycle.submit_intent(intent)
-                    accepted += 1
+                # Paper lifecycle is allowed to exercise the full intent/fill path.
+                # The live gate is independently asserted false and never routes here.
+                if gate_decision:
+                    raise AssertionError("live gate unexpectedly allowed shadow execution")
+                lifecycle.submit_intent(intent)
+                accepted += 1
                 previous = target
             changed = lifecycle.advance(symbol=sym, market_price=str(bar.close))
             total_fills += sum(1 for o in changed if o.status.value == "filled")
