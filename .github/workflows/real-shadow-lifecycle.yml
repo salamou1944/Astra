@@ -1,0 +1,25 @@
+name: ASTRA REAL-DATA SHADOW LIFECYCLE
+on:
+  push:
+    branches: [main]
+    paths:
+      - "astra/execution/**"
+      - "astra/execution/safety.py"
+      - "astra/strategies.py"
+      - "data/real/**"
+      - "scripts/real_shadow_lifecycle_ci.py"
+      - ".github/workflows/real-shadow-lifecycle.yml"
+  workflow_dispatch:
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/real_shadow_lifecycle_ci.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: astra-real-shadow-lifecycle-evidence
+          path: evidence/real_shadow_lifecycle_ci.json
