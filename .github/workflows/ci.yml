@@ -24,13 +24,13 @@ jobs:
           python-version: "3.13"
       - run: python scripts/research_candidate_real_ci.py
       - run: python scripts/cross_asset_research_ci.py
-      - name: Persist research evidence
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add evidence/real_data_candidate_research_ci.json evidence/cross_asset_research_ci.json
-          git diff --cached --quiet || git commit -m "evidence(astra): persist fresh real-data research [skip ci]"
-          git push
+      - name: Archive research evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: astra-real-data-research-evidence
+          path: |
+            evidence/real_data_candidate_research_ci.json
+            evidence/cross_asset_research_ci.json
 
   execution-boundary:
     runs-on: ubuntu-latest
