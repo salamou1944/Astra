@@ -34,6 +34,7 @@ class PaperBrokerTests(unittest.TestCase):
         order = broker.submit(symbol="BTCUSD", side="buy", quantity="1")
         self.assertEqual(broker.advance(symbol="BTCUSD", market_price="100"), [])
         self.assertEqual(broker.advance(symbol="BTCUSD", market_price="100"), [])
+        self.assertEqual(broker.advance(symbol="BTCUSD", market_price="100")[0].status, OrderStatus.FILLED)
         self.assertEqual(order.status, OrderStatus.FILLED)
 
     def test_rejection_does_not_change_position(self):
