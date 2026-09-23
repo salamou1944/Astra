@@ -5,6 +5,8 @@ on:
     paths:
       - "astra/execution/**"
       - "tests/test_kraken_execution.py"
+      - "tests/test_paper_execution.py"
+      - "tests/test_execution_safety.py"
       - "scripts/execution_boundary_check.py"
       - "scripts/execution_live_preflight.py"
       - ".github/workflows/execution-boundary.yml"
@@ -19,8 +21,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Safety tests
-        run: python -m unittest discover -s tests -p "test_kraken_execution.py" -v
+      - name: Execution tests
+        run: python -m unittest discover -s tests -p "test_*execution*.py" -v
       - name: Offline boundary
         run: python scripts/execution_boundary_check.py
       - name: Non-trading preflight
