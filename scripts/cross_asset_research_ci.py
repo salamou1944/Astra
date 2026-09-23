@@ -50,7 +50,8 @@ def run():
   asset_tests={}
   for sym,bars in data.items():
    test_start=start+TRAIN+EMBARGO; test_end=test_start+TEST
-   context_start=max(0,test_start-int(selected[2] if len(selected)>2 else 0))
+   lookback=max([int(v) for k,v in p.items() if k in ("fast","slow","window")] or [1])
+   context_start=max(0,test_start-lookback)
    context=bars[context_start:test_end]; off=test_start-context_start
    asset_tests[sym]=backtest_signals(context[off:],signal_for(context,name,p)[off:],fee=FEE,slip=SLIP)
   folds.append({"fold":len(folds)+1,"train_start":start,"train_end":start+TRAIN-1,"test_start":start+TRAIN+EMBARGO,"test_end":start+TRAIN+EMBARGO+TEST-1,"selected":name,"params":p,"train_stability_score":selected[0],"train_max_dd":-selected[1],"train_mean_aggregate_return_pct":selected[2],"asset_tests":asset_tests})
