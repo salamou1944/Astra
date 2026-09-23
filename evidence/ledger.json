@@ -1,12 +1,53 @@
 {
-  "generated_at": "2026-09-23T15:30:00Z",
+  "generated_at": "2026-09-23",
   "records": [
-    {"name":"deterministic_core","status":"PROVEN","maturity":"TESTED","detail":"49/49 local regression PASS"},
-    {"name":"real_data_acquisition","status":"PROVEN","maturity":"E2E","detail":"Kraken public REST API; 721 non-synthetic BTC/USD daily rows; source and dataset SHA-256 persisted"},
-    {"name":"real_data_research","status":"PROVEN_RUN_RESEARCH_GATE_FAIL","maturity":"E2E","detail":"4-fold walk-forward on verified real data; aggregate -46.158%; positive-fold ratio 0.25"},
-    {"name":"robustness","status":"PROVEN_RUN_GATE_FAIL","maturity":"E2E","detail":"adversarial survival 0.0; fee/slippage stress executed"},
-    {"name":"risk_shadow","status":"PROVEN","maturity":"E2E","detail":"risk guardian halted at max-drawdown threshold; 0 broker orders"},
-    {"name":"profitability_alpha","status":"UNVERIFIED","maturity":"NOT_PROVEN","detail":"real data acquired but research gate failed; no profitability claim"},
-    {"name":"real_money_execution","status":"DISABLED","maturity":"HARDENED","detail":"live-money execution remains OFF"}
+    {
+      "name": "deterministic_core",
+      "status": "PROVEN",
+      "maturity": "TESTED",
+      "detail": "49/49 local regression PASS"
+    },
+    {
+      "name": "real_data_acquisition",
+      "status": "PROVEN",
+      "maturity": "E2E",
+      "detail": "Kraken public REST API; verified non-synthetic daily OHLCV for BTC/USD, ETH/USD, SOL/USD, LTC/USD; 721 rows each; per-dataset SHA-256 persisted"
+    },
+    {
+      "name": "real_data_research",
+      "status": "PROVEN_RUN_RESEARCH_GATE_FAIL",
+      "maturity": "E2E",
+      "detail": "123-candidate BTC/USD tournament: 4-fold aggregate -37.2422%, positive-fold ratio 0.25; gate FAIL"
+    },
+    {
+      "name": "cross_asset_research",
+      "status": "PROVEN_RUN_RESEARCH_GATE_FAIL",
+      "maturity": "E2E",
+      "detail": "123-candidate equal-weight cross-asset validation across BTC/USD, ETH/USD, SOL/USD, LTC/USD; 4 folds; aggregate -6.8715%; positive asset-fold ratio 0.25; max drawdown 37.3515%; gate FAIL"
+    },
+    {
+      "name": "robustness",
+      "status": "PROVEN_RUN_GATE_FAIL",
+      "maturity": "E2E",
+      "detail": "adversarial survival 0.0; fee/slippage stress executed"
+    },
+    {
+      "name": "risk_shadow",
+      "status": "PROVEN",
+      "maturity": "E2E",
+      "detail": "risk guardian halted at max-drawdown threshold; 0 broker orders"
+    },
+    {
+      "name": "profitability_alpha",
+      "status": "UNVERIFIED",
+      "maturity": "NOT_PROVEN",
+      "detail": "multiple real-data research gates failed; no profitability or alpha claim"
+    },
+    {
+      "name": "real_money_execution",
+      "status": "DISABLED",
+      "maturity": "HARDENED",
+      "detail": "live-money execution remains OFF"
+    }
   ]
 }
