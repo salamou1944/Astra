@@ -1,5 +1,4 @@
 name: ASTRA INDEPENDENT SOURCE VALIDATION
-# trigger refresh 2026-09-23
 on:
   push:
     branches: [main]
@@ -8,7 +7,7 @@ on:
       - "scripts/independent_source_validation_ci.py"
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -19,10 +18,8 @@ jobs:
           python-version: "3.13"
       - name: Validate independent market source
         run: python scripts/independent_source_validation_ci.py
-      - name: Persist evidence
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add evidence/independent_source_validation_ci.json
-          git diff --cached --quiet || git commit -m "evidence(astra): validate independent market source [skip ci]"
-          git push
+      - name: Archive evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: astra-independent-source-validation
+          path: evidence/independent_source_validation_ci.json
