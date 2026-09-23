@@ -1,0 +1,20 @@
+name: ASTRA PROSPECTIVE PAPER VALIDATION
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 0 * * *"
+permissions:
+  contents: read
+jobs:
+  prospective-paper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/prospective_paper_validation_ci.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: astra-prospective-paper-validation
+          path: evidence/prospective_paper_validation_ci.json
