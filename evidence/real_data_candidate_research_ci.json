@@ -1,0 +1,100 @@
+{
+  "candidate_count": 79,
+  "cost": {
+    "fee": 0.0005,
+    "slip": 0.0002
+  },
+  "dataset_sha256": "fb3598099d2beef502a8a34dedf21cebd64236917780fd6b55821c9082993060",
+  "folds": [
+    {
+      "fold": 1,
+      "params": {
+        "fast": 10,
+        "slow": 24
+      },
+      "selected": "trend",
+      "test": {
+        "max_drawdown_pct": 13.1623,
+        "return_pct": -10.7353,
+        "trades": 6
+      },
+      "test_end": 404,
+      "test_start": 305,
+      "train_end": 299,
+      "train_score_return_pct": 98.0039,
+      "train_start": 0
+    },
+    {
+      "fold": 2,
+      "params": {
+        "window": 15,
+        "z": 3.0
+      },
+      "selected": "mean_reversion",
+      "test": {
+        "max_drawdown_pct": 0.07,
+        "return_pct": 0.6562,
+        "trades": 2
+      },
+      "test_end": 504,
+      "test_start": 405,
+      "train_end": 399,
+      "train_score_return_pct": 55.539,
+      "train_start": 100
+    },
+    {
+      "fold": 3,
+      "params": {
+        "window": 30,
+        "z": 3.0
+      },
+      "selected": "mean_reversion",
+      "test": {
+        "max_drawdown_pct": 3.2478,
+        "return_pct": -2.7427,
+        "trades": 3
+      },
+      "test_end": 604,
+      "test_start": 505,
+      "train_end": 499,
+      "train_score_return_pct": 35.2259,
+      "train_start": 200
+    },
+    {
+      "fold": 4,
+      "params": {
+        "window": 15,
+        "z": 3.0
+      },
+      "selected": "mean_reversion",
+      "test": {
+        "max_drawdown_pct": 0.0,
+        "return_pct": 0.0,
+        "trades": 0
+      },
+      "test_end": 704,
+      "test_start": 605,
+      "train_end": 599,
+      "train_score_return_pct": 55.7603,
+      "train_start": 300
+    }
+  ],
+  "live_money_execution": false,
+  "profitability": "UNVERIFIED",
+  "rows": 721,
+  "status": "PROVEN_CANDIDATE_RESEARCH",
+  "summary": {
+    "aggregate_return_pct": -12.6139,
+    "folds": 4,
+    "max_drawdown_pct": 13.1623,
+    "mean_return_pct": -3.2055,
+    "passed_gate": false,
+    "positive_fold_ratio": 0.25,
+    "test_returns": [
+      -10.7353,
+      0.6562,
+      -2.7427,
+      0.0
+    ]
+  }
+}
