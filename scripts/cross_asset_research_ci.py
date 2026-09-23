@@ -67,12 +67,12 @@ def run():
    benchmarks[sym]=round(bh,4)
   folds.append({"fold":len(folds)+1,"train_start":start,"train_end":start+TRAIN-1,"test_start":start+TRAIN+EMBARGO,"test_end":start+TRAIN+EMBARGO+TEST-1,"selected":name,"params":p,"train_stability_score":selected[0],"train_max_dd":-selected[1],"train_mean_aggregate_return_pct":selected[2],"train_activity_trades":selected[5],"asset_tests":asset_tests,"buy_hold_return_pct":benchmarks})
   start+=STEP
- fold_returns=[mean(v["return_pct"] for v in f["asset_tests"].values()) for f in folds]
+ fold_returns=[mean(v["return_pct"] for v in f["asset_tests"].values()) for f in folds]\n fold_bh_returns=[mean(f["buy_hold_return_pct"].values()) for f in folds]
  all_asset_returns=[v["return_pct"] for f in folds for v in f["asset_tests"].values()]
  wealth=1.0
  for x in fold_returns: wealth*=1+x/100
  agg=(wealth-1)*100
- maxdd=max(v["max_drawdown_pct"] for f in folds for v in f["asset_tests"].values())
+ maxdd=max(v["max_drawdown_pct"] for f in folds for v in f["asset_tests"].values())\n bh_wealth=1.0\n for x in fold_bh_returns: bh_wealth*=1+x/100\n bh_agg=(bh_wealth-1)*100
  positive=sum(x>0 for x in all_asset_returns)/len(all_asset_returns)
  ev={"status":"PROVEN_CROSS_ASSET_RESEARCH","dataset_sha256":{s:sha256(ROOT/"data/real"/f"kraken_{s}_1d.csv") for s in ASSETS},"rows":{s:len(v) for s,v in data.items()},"candidate_count":len(CANDIDATES),"folds":folds,"summary":{"folds":len(folds),"mean_asset_fold_return_pct":round(mean(fold_returns),4),"positive_asset_fold_ratio":round(positive,4),"aggregate_equal_weight_fold_return_pct":round(agg,4),"max_asset_drawdown_pct":round(maxdd,4),"buy_hold_aggregate_return_pct":round(bh_agg,4),"strategy_vs_buy_hold_pct":round(agg-bh_agg,4),"passed_gate":agg>0 and positive>=0.5 and maxdd<=8.0},"cost":{"fee":FEE,"slip":SLIP},"profitability":"UNVERIFIED","live_money_execution":False}
  out=ROOT/"evidence/cross_asset_research_ci.json"; out.write_text(json.dumps(ev,indent=2,sort_keys=True)+"\n",encoding="utf-8"); print(json.dumps(ev,indent=2))
