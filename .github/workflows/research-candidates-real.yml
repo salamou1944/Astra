@@ -1,4 +1,5 @@
 name: ASTRA REAL_DATA CANDIDATE RESEARCH
+# Re-run candidate tournament after selection-score fix
 on:
   push:
     branches: [main]
