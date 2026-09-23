@@ -23,6 +23,14 @@ class ExecutionSafetyTests(unittest.TestCase):
         self.assertFalse(result.ok)
         self.assertIn("missing_exchange_order:a", result.mismatches)
         self.assertIn("unknown_exchange_order:b", result.mismatches)
+        fill_result = reconcile(
+            local_orders={"a": {"status": "partially_filled", "filled": "0.5", "remaining": "0.5"}},
+            exchange_orders={"a": {"status": "filled", "filled": "1", "remaining": "0"}},
+            local_positions={}, exchange_positions={},
+            local_balances={"USD": "100"}, exchange_balances={"USD": "100"},
+        )
+        self.assertIn("order_field_mismatch:a:status", fill_result.mismatches)
+        self.assertIn("order_field_mismatch:a:filled", fill_result.mismatches)
 
     def test_reconciliation_detects_state_mismatch(self):
         result = reconcile(
