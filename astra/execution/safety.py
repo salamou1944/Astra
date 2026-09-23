@@ -68,6 +68,30 @@ def reconcile(
     return ReconciliationResult(not mismatches, tuple(mismatches))
 
 
+def reconcile_and_trip(
+    *,
+    kill_switch: KillSwitch,
+    local_orders: dict[str, dict],
+    exchange_orders: dict[str, dict],
+    local_positions: dict[str, str],
+    exchange_positions: dict[str, str],
+    local_balances: dict[str, str],
+    exchange_balances: dict[str, str],
+) -> ReconciliationResult:
+    """Reconcile state and trip the kill switch on any mismatch."""
+    result = reconcile(
+        local_orders=local_orders,
+        exchange_orders=exchange_orders,
+        local_positions=local_positions,
+        exchange_positions=exchange_positions,
+        local_balances=local_balances,
+        exchange_balances=exchange_balances,
+    )
+    if not result.ok:
+        kill_switch.trip(HaltReason.RECONCILIATION)
+    return result
+
+
 class ExecutionGate:
     """Final fail-closed gate; no strategy or ChatGPT output can bypass it."""
 
