@@ -3,7 +3,7 @@
   "asset_count": 4,
   "assets": [
     {
-      "dataset_sha256": "5e393587ff855240a40d959e4b3d48e36e730147d43e7a356961a23ef94dd4e2",
+      "dataset_sha256": "9936a4488110ce951dc95a321a8ff7ed757e92c6410e792ba4fd558c484bb22d",
       "end": "2026-09-23T00:00:00Z",
       "fixture": false,
       "local_validation": true,
@@ -20,7 +20,7 @@
       "synthetic": false
     },
     {
-      "dataset_sha256": "c6ce3923fe40b52e59b638457c819fed7b9def24b1d785e439b54805134c3ed8",
+      "dataset_sha256": "a99d0981d3b009c659264405875e3e39365123309e454186168d94b34c206ac7",
       "end": "2026-09-23T00:00:00Z",
       "fixture": false,
       "local_validation": true,
@@ -37,7 +37,7 @@
       "synthetic": false
     },
     {
-      "dataset_sha256": "dd5d01cefd88f93dd4316425862ce750d18cd59884afb5e449e67414dbc30a8c",
+      "dataset_sha256": "32fa10f9061e020e4aa3c4eae5edd7c3b956433549d9c07f73095f567223ff00",
       "end": "2026-09-23T00:00:00Z",
       "fixture": false,
       "local_validation": true,
@@ -54,7 +54,7 @@
       "synthetic": false
     },
     {
-      "dataset_sha256": "8f44378f1cfc6cc6f5e59d859ff7278ab5264deb302a839ccf1de2d61d8c6207",
+      "dataset_sha256": "06b75b69706c9e4234b4d8b7ff092e7da8e46c4502a0cd34d45c7689d189cc37",
       "end": "2026-09-23T00:00:00Z",
       "fixture": false,
       "local_validation": true,
@@ -75,6 +75,6 @@
   "live_money_execution": false,
   "profitability": "UNVERIFIED",
   "requested_assets": 4,
-  "retrieved_at": "2026-09-23T16:38:20.443932Z",
+  "retrieved_at": "2026-09-23T16:39:16.188953Z",
   "status": "PROVEN"
 }

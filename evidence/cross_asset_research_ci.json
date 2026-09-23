@@ -5,10 +5,10 @@
     "slip": 0.0002
   },
   "dataset_sha256": {
-    "BTCUSD": "5e393587ff855240a40d959e4b3d48e36e730147d43e7a356961a23ef94dd4e2",
-    "ETHUSD": "c6ce3923fe40b52e59b638457c819fed7b9def24b1d785e439b54805134c3ed8",
-    "LTCUSD": "8f44378f1cfc6cc6f5e59d859ff7278ab5264deb302a839ccf1de2d61d8c6207",
-    "SOLUSD": "dd5d01cefd88f93dd4316425862ce750d18cd59884afb5e449e67414dbc30a8c"
+    "BTCUSD": "9936a4488110ce951dc95a321a8ff7ed757e92c6410e792ba4fd558c484bb22d",
+    "ETHUSD": "a99d0981d3b009c659264405875e3e39365123309e454186168d94b34c206ac7",
+    "LTCUSD": "06b75b69706c9e4234b4d8b7ff092e7da8e46c4502a0cd34d45c7689d189cc37",
+    "SOLUSD": "32fa10f9061e020e4aa3c4eae5edd7c3b956433549d9c07f73095f567223ff00"
   },
   "folds": [
     {
@@ -42,6 +42,7 @@
       "selected": "long_momentum",
       "test_end": 404,
       "test_start": 305,
+      "train_activity_trades": 92,
       "train_end": 299,
       "train_max_dd": 41.1499,
       "train_mean_aggregate_return_pct": 63.64577281292498,
@@ -51,46 +52,47 @@
     {
       "asset_tests": {
         "BTCUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
-          "trades": 0
+          "max_drawdown_pct": 1.5553,
+          "return_pct": -1.5553,
+          "trades": 2
         },
         "ETHUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
-          "trades": 0
+          "max_drawdown_pct": 16.4002,
+          "return_pct": -16.4002,
+          "trades": 8
         },
         "LTCUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
-          "trades": 0
+          "max_drawdown_pct": 2.8762,
+          "return_pct": -2.8762,
+          "trades": 2
         },
         "SOLUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
-          "trades": 0
+          "max_drawdown_pct": 9.1508,
+          "return_pct": -7.8203,
+          "trades": 4
         }
       },
       "fold": 2,
       "params": {
-        "fast": 10,
-        "slow": 160
+        "threshold": 10.0,
+        "window": 20
       },
-      "selected": "long_trend",
+      "selected": "long_momentum",
       "test_end": 504,
       "test_start": 405,
+      "train_activity_trades": 74,
       "train_end": 399,
-      "train_max_dd": 0.0,
-      "train_mean_aggregate_return_pct": 0.0,
-      "train_stability_score": 0.0,
+      "train_max_dd": 30.9289,
+      "train_mean_aggregate_return_pct": 21.492080713225008,
+      "train_stability_score": -9.7081,
       "train_start": 100
     },
     {
       "asset_tests": {
         "BTCUSD": {
-          "max_drawdown_pct": 7.7484,
-          "return_pct": -3.697,
-          "trades": 4
+          "max_drawdown_pct": 0.0,
+          "return_pct": 0.0,
+          "trades": 0
         },
         "ETHUSD": {
           "max_drawdown_pct": 0.0,
@@ -110,53 +112,55 @@
       },
       "fold": 3,
       "params": {
-        "fast": 10,
-        "slow": 160
+        "threshold": 0.0,
+        "window": 120
       },
-      "selected": "long_trend",
+      "selected": "long_momentum",
       "test_end": 604,
       "test_start": 505,
+      "train_activity_trades": 10,
       "train_end": 499,
-      "train_max_dd": 0.0,
-      "train_mean_aggregate_return_pct": 0.0,
-      "train_stability_score": 0.0,
+      "train_max_dd": 15.807,
+      "train_mean_aggregate_return_pct": 13.257875000000002,
+      "train_stability_score": -1.1355,
       "train_start": 200
     },
     {
       "asset_tests": {
         "BTCUSD": {
-          "max_drawdown_pct": 4.1896,
-          "return_pct": -2.8496,
-          "trades": 6
+          "max_drawdown_pct": 14.8683,
+          "return_pct": 11.4186,
+          "trades": 10
         },
         "ETHUSD": {
-          "max_drawdown_pct": 6.6777,
-          "return_pct": -2.8257,
-          "trades": 3
+          "max_drawdown_pct": 21.2959,
+          "return_pct": 29.8027,
+          "trades": 6
         },
         "LTCUSD": {
-          "max_drawdown_pct": 0.0,
-          "return_pct": 0.0,
-          "trades": 0
+          "max_drawdown_pct": 21.9443,
+          "return_pct": 10.0961,
+          "trades": 13
         },
         "SOLUSD": {
-          "max_drawdown_pct": 8.4471,
-          "return_pct": 16.1213,
-          "trades": 3
+          "max_drawdown_pct": 32.996,
+          "return_pct": 11.254,
+          "trades": 14
         }
       },
       "fold": 4,
       "params": {
-        "threshold": 0.0,
-        "window": 120
+        "fast": 6,
+        "slow": 80
       },
-      "selected": "long_momentum",
+      "selected": "trend",
       "test_end": 704,
       "test_start": 605,
+      "train_activity_trades": 82,
       "train_end": 599,
-      "train_max_dd": 0.0,
-      "train_mean_aggregate_return_pct": 0.0,
-      "train_stability_score": 0.0,
+      "train_max_dd": 25.5723,
+      "train_mean_aggregate_return_pct": 12.965948289724993,
+      "train_stability_score": -5.8234,
       "train_start": 300
     }
   ],
@@ -170,11 +174,11 @@
   },
   "status": "PROVEN_CROSS_ASSET_RESEARCH",
   "summary": {
-    "aggregate_equal_weight_fold_return_pct": -11.8126,
+    "aggregate_equal_weight_fold_return_pct": -6.8715,
     "folds": 4,
     "max_asset_drawdown_pct": 37.3515,
-    "mean_asset_fold_return_pct": -2.892,
+    "mean_asset_fold_return_pct": -1.1939,
     "passed_gate": false,
-    "positive_asset_fold_ratio": 0.0625
+    "positive_asset_fold_ratio": 0.25
   }
 }
