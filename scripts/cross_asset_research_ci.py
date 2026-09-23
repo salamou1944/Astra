@@ -59,7 +59,9 @@ def run():
    lookback=max([int(v) for k,v in p.items() if k in ("fast","slow","window")] or [1])
    context_start=max(0,test_start-lookback)
    context=bars[context_start:test_end]; off=test_start-context_start
-   asset_tests[sym]=backtest_signals(context[off:],signal_for(context,name,p)[off:],fee=FEE,slip=SLIP)
+   test_bars=context[off:]
+   test_sigs=signal_for(context,name,p)[off:]
+   asset_tests[sym]=backtest_signals(test_bars,test_sigs,fee=FEE,slip=SLIP)
   folds.append({"fold":len(folds)+1,"train_start":start,"train_end":start+TRAIN-1,"test_start":start+TRAIN+EMBARGO,"test_end":start+TRAIN+EMBARGO+TEST-1,"selected":name,"params":p,"train_stability_score":selected[0],"train_max_dd":-selected[1],"train_mean_aggregate_return_pct":selected[2],"train_activity_trades":selected[5],"asset_tests":asset_tests})
   start+=STEP
  fold_returns=[mean(v["return_pct"] for v in f["asset_tests"].values()) for f in folds]
