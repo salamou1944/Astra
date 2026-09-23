@@ -41,7 +41,7 @@ def main():
             raw_path.write_text(json.dumps(rows,separators=(",",":")),encoding="utf-8")
             with csv_path.open("w",newline="",encoding="utf-8") as f:
                 w=csv.writer(f); w.writerow(["timestamp","open","high","low","close","volume"])
-                for x in sorted(rows,key=lambda z:int(x[0])):
+                for x in sorted(rows,key=lambda z:int(z[0])):
                     ts=datetime.fromtimestamp(int(x[0])/1000,tz=timezone.utc).isoformat().replace("+00:00","Z"); w.writerow([ts,x[1],x[2],x[3],x[4],x[5]])
             with csv_path.open(encoding="utf-8") as f: parsed=list(csv.DictReader(f))
             ts=[r["timestamp"] for r in parsed]
