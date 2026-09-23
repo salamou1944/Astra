@@ -2,6 +2,10 @@
 from __future__ import annotations
 import hashlib, json
 from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 from astra.execution.paper import PaperBroker
 from astra.execution.safety import ExecutionGate, KillSwitch, HaltReason, reconcile_and_trip
 
