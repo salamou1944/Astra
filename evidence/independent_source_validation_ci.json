@@ -1,0 +1,28 @@
+{
+  "status": "PROVEN_INDEPENDENT_SOURCE_VALIDATION",
+  "retrieved_at": "2026-09-23T17:46:02.009190Z",
+  "primary_source": {
+    "name": "Kraken public REST API",
+    "url": "https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval=1440"
+  },
+  "independent_source": {
+    "name": "Coinbase Exchange public REST API",
+    "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=86400"
+  },
+  "symbol": "BTC/USD",
+  "timeframe": "1d",
+  "primary_rows": 721,
+  "independent_rows": 350,
+  "overlap_rows": 350,
+  "overlap_start": "2025-10-09",
+  "overlap_end": "2026-09-23",
+  "relative_close_diff_mean_pct": 0.015426,
+  "relative_close_diff_max_pct": 0.13228,
+  "close_agreement_within_0_1pct_ratio": 0.994286,
+  "source_independence": "separate exchange APIs",
+  "non_synthetic": true,
+  "mock": false,
+  "fixture": false,
+  "profitability": "UNVERIFIED",
+  "live_money_execution": false
+}\n
