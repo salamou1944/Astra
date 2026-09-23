@@ -62,7 +62,7 @@ def run():
  while start+TRAIN+EMBARGO+TEST<=len(bars):
   train_end=start+TRAIN; test_start=train_end+EMBARGO; test_end=test_start+TEST
   selected=rank_train(bars[start:train_end])
-  name,p=selected[3],selected[4]
+  name,p=selected[4],selected[5]
   # Context supplies indicator history without allowing any post-test observations.
   context_start=max(0,test_start-int(selected[2]))
   context=bars[context_start:test_end]
