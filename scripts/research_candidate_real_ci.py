@@ -38,7 +38,7 @@ def signal_for(bars,name,params):
 
 def rank_train(bars):
  rows=[]
- for name,p,_ in CANDIDATES:
+ for name,p,_,_ in CANDIDATES:
   r=backtest_signals(bars,signal_for(bars,name,p),fee=FEE,slip=SLIP)
   rows.append((r["return_pct"],-r["max_drawdown_pct"],-r["trades"],name,p,r))
  return max(rows,key=lambda x:x[:3])
