@@ -39,3 +39,12 @@ def regime(bars, short=10, long=40):
         long_ret=c[i]/c[i-long]-1
         out.append('trend' if short_ret*long_ret>0 and abs(long_ret)>0.01 else 'range')
     return out
+
+
+def long_momentum(bars, window=30, threshold=0.0):
+    c=_closes(bars); out=[]
+    for i,p in enumerate(c):
+        if i < window: out.append(0); continue
+        ret=p/c[i-window]-1
+        out.append(1 if ret > threshold/100 else 0)
+    return out
