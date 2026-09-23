@@ -3,11 +3,30 @@
 ## v1.7.0
 
 - Local regression: **49/49 PASS**.
-- Research gate: non-synthetic + source-verified + locally verified + SHA-256 + minimum 400 rows.
-- Six-row official Alpaca fixture is adapter/provenance evidence only.
-- Real historical research-scale dataset: **BLOCKED/UNVERIFIED**.
+- REAL_DATA: **PROVEN** through a GitHub-hosted runner.
+- Source verification: **Kraken public REST API**.
+- Dataset: **721 non-synthetic BTC/USD daily rows**.
+- Dataset SHA-256: `fb3598099d2beef502a8a34dedf21cebd64236917780fd6b55821c9082993060`.
+- Provenance persisted: **YES**.
+- Local OHLCV/timestamp validation: **PASS**.
+- Walk-forward/OOS: **4 folds, research gate FAIL**.
+- Robustness: adversarial survival **0.0**; cost stress executed.
+- Risk/shadow: **PROVEN**, with max-drawdown halt and **0 broker orders**.
 - Profitability/alpha: **UNVERIFIED**.
-- Paper/shadow: implemented, not profitability proof.
 - Live execution: **OFF**.
 
-The 2026-09-23 barrier evidence records DNS and direct HTTPS failures plus blocked Replit/Railway provisioning.
+### Real-data acquisition evidence
+
+`evidence/real_data_ci.json` records source access, successful retrieval, 721 rows, provenance, SHA-256, non-synthetic status, and local validation.
+
+### Research evidence
+
+`evidence/real_data_research_ci.json` records the actual real-data research result. It is negative/failed research evidence, not a profitability claim.
+
+### Risk/shadow evidence
+
+`evidence/real_data_risk_shadow_ci.json` records the risk guardian halt and zero broker orders.
+
+### Previous barrier evidence
+
+The earlier 2026-09-23 local barrier remains valid as a local-environment finding: the original sandbox lacked outbound network access. The GitHub-hosted runner supplied a distinct authorized execution boundary. Binance returned HTTP 451 there, while Kraken supplied the verified dataset.
