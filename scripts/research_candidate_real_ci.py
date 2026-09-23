@@ -71,7 +71,7 @@ def run():
   test=backtest_signals(context[off:],sig[off:],fee=FEE,slip=SLIP)
   folds.append({"fold":len(folds)+1,"train_start":start,"train_end":train_end-1,
                 "test_start":test_start,"test_end":test_end-1,"selected":name,
-                "params":p,"train_score_return_pct":selected[5]["return_pct"],
+                "params":p,"train_score_return_pct":selected[6]["return_pct"],
                 "test":test})
   start+=STEP
  returns=[f["test"]["return_pct"] for f in folds]
