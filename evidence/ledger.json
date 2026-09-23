@@ -1,11 +1,12 @@
 {
-  "generated_at": "2026-09-22T23:20:48.314293+00:00",
+  "generated_at": "2026-09-23T15:30:00Z",
   "records": [
-    {"name":"deterministic_core","status":"PROVEN","maturity":"TESTED","detail":"9 local tests passed, including deterministic core and research layers"},
-    {"name":"walk_forward","status":"PROVEN","maturity":"TESTED","detail":"6 chronological test folds executed on deterministic research dataset"},
-    {"name":"adversarial_gate","status":"PROVEN","maturity":"TESTED","detail":"parameter perturbation gate passed with survival ratio 1.00 on deterministic dataset"},
-    {"name":"alpaca_adapter","status":"IMPLEMENTED","maturity":"IMPLEMENTED","detail":"public Alpaca crypto historical adapter and OHLCV validation implemented"},
-    {"name":"alpaca_provider_runtime","status":"BLOCKED","maturity":"RUNTIME VERIFIED","detail":"outbound DNS/network unavailable in execution environment"},
-    {"name":"real_money_execution","status":"DISABLED","maturity":"HARDENED","detail":"no live-money execution path enabled"}
+    {"name":"deterministic_core","status":"PROVEN","maturity":"TESTED","detail":"49/49 local regression PASS"},
+    {"name":"real_data_acquisition","status":"PROVEN","maturity":"E2E","detail":"Kraken public REST API; 721 non-synthetic BTC/USD daily rows; source and dataset SHA-256 persisted"},
+    {"name":"real_data_research","status":"PROVEN_RUN_RESEARCH_GATE_FAIL","maturity":"E2E","detail":"4-fold walk-forward on verified real data; aggregate -46.158%; positive-fold ratio 0.25"},
+    {"name":"robustness","status":"PROVEN_RUN_GATE_FAIL","maturity":"E2E","detail":"adversarial survival 0.0; fee/slippage stress executed"},
+    {"name":"risk_shadow","status":"PROVEN","maturity":"E2E","detail":"risk guardian halted at max-drawdown threshold; 0 broker orders"},
+    {"name":"profitability_alpha","status":"UNVERIFIED","maturity":"NOT_PROVEN","detail":"real data acquired but research gate failed; no profitability claim"},
+    {"name":"real_money_execution","status":"DISABLED","maturity":"HARDENED","detail":"live-money execution remains OFF"}
   ]
 }
