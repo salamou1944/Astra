@@ -1,5 +1,10 @@
 name: ASTRA PROSPECTIVE PAPER VALIDATION
 on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/prospective_paper_validation_ci.py"
+      - ".github/workflows/prospective-paper-validation.yml"
   workflow_dispatch:
   schedule:
     - cron: "17 0 * * *"
