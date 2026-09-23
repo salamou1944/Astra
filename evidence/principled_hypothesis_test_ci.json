@@ -1,0 +1,77 @@
+{
+  "status": "PROVEN_PRINCIPLED_HYPOTHESIS_TEST",
+  "selection": {
+    "research_end_exclusive": 520,
+    "candidate_count": 63,
+    "selected": "vol_filtered_momentum",
+    "params": {
+      "w": 60,
+      "t": 5,
+      "v": 0.025
+    }
+  },
+  "validation": {
+    "start": 525,
+    "end": 619,
+    "results": {
+      "BTCUSD": {
+        "return_pct": -11.6244,
+        "max_drawdown_pct": 18.1311,
+        "trades": 8
+      },
+      "ETHUSD": {
+        "return_pct": 0,
+        "max_drawdown_pct": 0,
+        "trades": 0
+      },
+      "SOLUSD": {
+        "return_pct": 0,
+        "max_drawdown_pct": 0,
+        "trades": 0
+      },
+      "LTCUSD": {
+        "return_pct": 0.2136,
+        "max_drawdown_pct": 5.6658,
+        "trades": 4
+      }
+    },
+    "positive_asset_ratio": 0.25
+  },
+  "final_holdout": {
+    "start": 621,
+    "end": 720,
+    "results": {
+      "BTCUSD": {
+        "return_pct": 18.3544,
+        "max_drawdown_pct": 7.0021,
+        "trades": 5
+      },
+      "ETHUSD": {
+        "return_pct": 20.1226,
+        "max_drawdown_pct": 2.3422,
+        "trades": 4
+      },
+      "SOLUSD": {
+        "return_pct": 10.7277,
+        "max_drawdown_pct": 1.3621,
+        "trades": 4
+      },
+      "LTCUSD": {
+        "return_pct": 22.7744,
+        "max_drawdown_pct": 9.7442,
+        "trades": 4
+      }
+    },
+    "buy_hold_return_pct": {
+      "BTCUSD": 28.017741333191083,
+      "ETHUSD": 48.52759742978523,
+      "SOLUSD": 55.784166780215294,
+      "LTCUSD": 31.74950733523101
+    },
+    "strategy_equal_weight_compounded_pct": 17.908,
+    "buy_hold_equal_weight_compounded_pct": 40.5521
+  },
+  "profitability": "UNVERIFIED",
+  "alpha": "UNVERIFIED",
+  "live_money_execution": false
+}
