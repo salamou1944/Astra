@@ -51,6 +51,10 @@ def main():
  for sym,bs in data.items():
   look=max([int(v) for k,v in p.items() if k in ("fast","slow","window")] or [1])
   ctx=bs[h0-look:n]; ss=sig(ctx,name,p); tests[sym]=backtest_signals(ctx[look:],ss[look:],fee=FEE,slip=SLIP)
- ev={"status":"PROVEN_HOLDOUT_VALIDATION","candidate_count":len(C),"research_period_end_index":research_end-1,"holdout_start_index":h0,"holdout_end_index":n-1,"selection_folds":len(history),"selected":name,"params":p,"selection_frequency":counts.get(name,0),"selection_history":[{"fold":i+1,"selected":x[4],"params":x[5],"stability":x[0]} for i,x in enumerate(history)],"holdout_tests":tests,"profitability":"UNVERIFIED","live_money_execution":False}
+ bh={sym:round((bs[-1].close/bs[h0].close-1)*100,4) for sym,bs in data.items()}
+ agg=1.0; bhagg=1.0
+ for sym in ASSETS:
+  agg*=1+tests[sym]["return_pct"]/100; bhagg*=1+bh[sym]/100
+ ev={"status":"PROVEN_HOLDOUT_VALIDATION","candidate_count":len(C),"research_period_end_index":research_end-1,"holdout_start_index":h0,"holdout_end_index":n-1,"selection_folds":len(history),"selected":name,"params":p,"selection_frequency":counts.get(name,0),"selection_history":[{"fold":i+1,"selected":x[4],"params":x[5],"stability":x[0]} for i,x in enumerate(history)],"holdout_tests":tests,"buy_hold_return_pct":bh,"summary":{"equal_weight_compounded_return_pct":round((agg**0.25-1)*100,4),"buy_hold_equal_weight_compounded_return_pct":round((bhagg**0.25-1)*100,4),"positive_asset_ratio":round(sum(v["return_pct"]>0 for v in tests.values())/len(tests),4),"max_drawdown_pct":round(max(v["max_drawdown_pct"] for v in tests.values()),4)},"profitability":"UNVERIFIED","live_money_execution":False}
  (ROOT/"evidence/holdout_validation_ci.json").write_text(json.dumps(ev,indent=2,sort_keys=True)+"\n",encoding="utf-8");print(json.dumps(ev,indent=2))
 if __name__=="__main__":main()
