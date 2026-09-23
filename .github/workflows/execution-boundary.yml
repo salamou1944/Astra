@@ -1,0 +1,28 @@
+name: ASTRA EXECUTION BOUNDARY CHECK
+on:
+  push:
+    branches: [main]
+    paths:
+      - "astra/execution/**"
+      - "tests/test_kraken_execution.py"
+      - "scripts/execution_boundary_check.py"
+      - ".github/workflows/execution-boundary.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Run safety tests
+        run: python -m unittest discover -s tests -p "test_kraken_execution.py" -v
+      - name: Run offline boundary check
+        run: python scripts/execution_boundary_check.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: astra-execution-boundary-evidence
+          path: evidence/execution_boundary_check.json
