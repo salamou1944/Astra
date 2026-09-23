@@ -1,0 +1,77 @@
+{
+  "adversary": {
+    "base_return_pct": -7.4803,
+    "max_drawdowns": [
+      50.6253,
+      48.1214,
+      39.159,
+      54.4431,
+      49.2603
+    ],
+    "passed": false,
+    "survival_ratio": 0.0,
+    "variants": [
+      -9.9218,
+      -32.1991,
+      -7.4803,
+      -34.8117,
+      -16.4228
+    ]
+  },
+  "baseline": {
+    "max_drawdown_pct": 39.159,
+    "return_pct": -7.4803,
+    "trades": 71
+  },
+  "cost_stress": [
+    {
+      "fee": 0.0002,
+      "max_drawdown_pct": 37.5262,
+      "return_pct": -4.048,
+      "slip": 0.0001,
+      "trades": 71
+    },
+    {
+      "fee": 0.0005,
+      "max_drawdown_pct": 39.159,
+      "return_pct": -7.4803,
+      "slip": 0.0002,
+      "trades": 71
+    },
+    {
+      "fee": 0.001,
+      "max_drawdown_pct": 42.5696,
+      "return_pct": -13.9863,
+      "slip": 0.0005,
+      "trades": 71
+    },
+    {
+      "fee": 0.002,
+      "max_drawdown_pct": 48.4667,
+      "return_pct": -24.9944,
+      "slip": 0.001,
+      "trades": 71
+    }
+  ],
+  "dataset_sha256": "fb3598099d2beef502a8a34dedf21cebd64236917780fd6b55821c9082993060",
+  "dataset_synthetic": false,
+  "live_money_execution": false,
+  "profitability": "UNVERIFIED",
+  "rows": 721,
+  "source": "Kraken public REST API",
+  "status": "PROVEN_RESEARCH_RUN",
+  "walk_forward": {
+    "aggregate_return_pct": -46.158,
+    "folds": 4,
+    "max_drawdown_pct": 39.2022,
+    "mean_return_pct": -12.6535,
+    "passed_gate": false,
+    "positive_fold_ratio": 0.25,
+    "test_returns": [
+      -37.675,
+      -1.8927,
+      -16.4909,
+      5.4444
+    ]
+  }
+}
