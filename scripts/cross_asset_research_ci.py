@@ -67,7 +67,8 @@ def run():
    benchmarks[sym]=round(bh,4)
   folds.append({"fold":len(folds)+1,"train_start":start,"train_end":start+TRAIN-1,"test_start":start+TRAIN+EMBARGO,"test_end":start+TRAIN+EMBARGO+TEST-1,"selected":name,"params":p,"train_stability_score":selected[0],"train_max_dd":-selected[1],"train_mean_aggregate_return_pct":selected[2],"train_activity_trades":selected[5],"asset_tests":asset_tests,"buy_hold_return_pct":benchmarks})
   start+=STEP
- fold_returns=[mean(v["return_pct"] for v in f["asset_tests"].values()) for f in folds]\n fold_bh_returns=[mean(f["buy_hold_return_pct"].values()) for f in folds]
+ fold_returns=[mean(v["return_pct"] for v in f["asset_tests"].values()) for f in folds]
+ fold_bh_returns=[mean(f["buy_hold_return_pct"].values()) for f in folds]
  all_asset_returns=[v["return_pct"] for f in folds for v in f["asset_tests"].values()]
  wealth=1.0
  for x in fold_returns: wealth*=1+x/100
