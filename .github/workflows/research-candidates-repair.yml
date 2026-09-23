@@ -1,0 +1,26 @@
+name: ASTRA REAL_DATA CANDIDATE RESEARCH REPAIR
+on:
+  workflow_run:
+    workflows: ["ASTRA REAL_DATA CANDIDATE RESEARCH"]
+    types: [completed]
+permissions:
+  contents: write
+jobs:
+  repair-research:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/research_candidate_real_ci.py
+      - name: Persist candidate evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evidence/real_data_candidate_research_ci.json
+          git diff --cached --quiet || git commit -m "evidence(astra): persist corrected candidate research [skip ci]"
+          git push
