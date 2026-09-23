@@ -1,8 +1,9 @@
 """Guarded Kraken Spot execution adapter.
 
 Live submission is fail-closed: ASTRA_LIVE_TRADING must be enabled *and* the
-ExecutionGate must authorize the complete safety chain. Withdrawal endpoints
-are intentionally absent.
+ExecutionGate must authorize the complete safety chain. Read-only private
+queries support reconciliation but also remain disabled while live mode is OFF.
+Withdrawal endpoints are intentionally absent.
 """
 from __future__ import annotations
 
@@ -36,7 +37,7 @@ class KrakenExecutionError(RuntimeError):
 
 
 class KrakenSpotExecutor:
-    """Authenticated Spot order boundary; no withdrawal capability by design."""
+    """Authenticated Spot boundary; no withdrawal capability by design."""
 
     def __init__(self, config: KrakenExecutionConfig):
         self.config = config
@@ -91,6 +92,21 @@ class KrakenSpotExecutor:
     def _submit_order(self, **order) -> dict:
         payload = self.build_add_order(**order)
         return self._private("/0/private/AddOrder", payload)
+
+    def query_balance(self) -> dict:
+        return self._private("/0/private/Balance", {})
+
+    def query_open_orders(self) -> dict:
+        return self._private("/0/private/OpenOrders", {})
+
+    def query_orders(self, *, txid: str | None = None) -> dict:
+        payload = {} if txid is None else {"txid": txid}
+        return self._private("/0/private/QueryOrders", payload)
+
+    def cancel_order(self, *, txid: str) -> dict:
+        if not txid:
+            raise ValueError("txid is required")
+        return self._private("/0/private/CancelOrder", {"txid": txid})
 
     def submit_order(self, **order) -> dict:
         """Compatibility entry point that is fail-closed for live submission."""
