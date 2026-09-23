@@ -99,7 +99,7 @@ class PaperBroker:
         for order in self.orders.values():
             if order.status not in {OrderStatus.ACCEPTED, OrderStatus.PARTIALLY_FILLED}:
                 continue
-            if self.step - order.submitted_step < self.latency_steps:
+            if self.step - order.submitted_step <= self.latency_steps:
                 continue
             if order.cancel_requested:
                 order.status = OrderStatus.CANCELED
