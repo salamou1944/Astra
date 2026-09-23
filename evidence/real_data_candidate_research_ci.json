@@ -4,7 +4,7 @@
     "fee": 0.0005,
     "slip": 0.0002
   },
-  "dataset_sha256": "630e1e8cc54cbc528b2243a5bc0ee3a1bb249e1b442a19cdc24db8ebe3d19f7a",
+  "dataset_sha256": "5e393587ff855240a40d959e4b3d48e36e730147d43e7a356961a23ef94dd4e2",
   "folds": [
     {
       "fold": 1,
