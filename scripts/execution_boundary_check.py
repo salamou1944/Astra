@@ -21,6 +21,5 @@ out = {
     "credentials_source": "environment_only",
     "evidence_scope": "offline safety boundary; not a live execution proof"
 }
-(ROOT / "evidence" / "execution_boundary_check.json").write_text(json.dumps(out, indent=2) + "
-")
+(ROOT / "evidence" / "execution_boundary_check.json").write_text(json.dumps(out, indent=2) + "\n")
 print(json.dumps(out, indent=2))
