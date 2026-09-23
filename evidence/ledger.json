@@ -41,13 +41,19 @@
       "name": "profitability_alpha",
       "status": "UNVERIFIED",
       "maturity": "NOT_PROVEN",
-      "detail": "candidate and cross-asset real-data research gates failed; profitability and alpha remain unverified; no promotion"
+      "detail": "UNVERIFIED: cross-asset research gates failed and the untouched holdout underperformed buy-and-hold"
     },
     {
       "name": "real_money_execution",
       "status": "DISABLED",
       "maturity": "HARDENED",
       "detail": "live-money execution remains OFF"
+    },
+    {
+      "name": "holdout_validation",
+      "status": "PROVEN_NEGATIVE_BENCHMARK",
+      "maturity": "E2E",
+      "detail": "100-bar untouched real-data holdout selected from prior research; equal-weight compounded strategy return 26.8301% vs buy-and-hold 40.5521%; positive asset ratio 1.0; max drawdown 16.7243%; no profitability/alpha claim"
     }
   ]
 }
