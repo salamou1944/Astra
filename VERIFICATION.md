@@ -37,3 +37,7 @@ The earlier 2026-09-23 local barrier remains valid as a local-environment findin
 ### Cross-asset evidence
 
 `evidence/multi_asset_real_data_ci.json` records successful Kraken retrieval and validation for four non-synthetic markets. `evidence/cross_asset_research_ci.json` records the cross-asset walk-forward result and its failed gate. No candidate is promoted to profitability or live execution on this evidence.
+
+### Untouched holdout evidence
+
+`evidence/holdout_validation_ci.json` records a 100-bar holdout excluded from candidate selection. The selected candidate was positive on all four assets, but the equal-weight compounded result (**26.8301%**) remained below the same-period buy-and-hold benchmark (**40.5521%**) and max drawdown reached **16.7243%**. Profitability/alpha remains unverified.
