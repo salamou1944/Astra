@@ -1,6 +1,6 @@
 name: ASTRA REAL_DATA CANDIDATE RESEARCH
 # Re-run candidate tournament after selection-score fix
-# Triggered on candidate-script corrections
+# Triggered on candidate-script corrections and evidence validation
 on:
   push:
     branches: [main]
