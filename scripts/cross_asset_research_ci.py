@@ -54,6 +54,7 @@ def run():
  while start+TRAIN+EMBARGO+TEST<=min(len(v) for v in data.values()):
   selected=rank_train(data,start); name,p=selected[3],selected[4]
   asset_tests={}
+  benchmarks={}
   for sym,bars in data.items():
    test_start=start+TRAIN+EMBARGO; test_end=test_start+TEST
    lookback=max([int(v) for k,v in p.items() if k in ("fast","slow","window")] or [1])
@@ -62,7 +63,9 @@ def run():
    test_bars=context[off:]
    test_sigs=signal_for(context,name,p)[off:]
    asset_tests[sym]=backtest_signals(test_bars,test_sigs,fee=FEE,slip=SLIP)
-  folds.append({"fold":len(folds)+1,"train_start":start,"train_end":start+TRAIN-1,"test_start":start+TRAIN+EMBARGO,"test_end":start+TRAIN+EMBARGO+TEST-1,"selected":name,"params":p,"train_stability_score":selected[0],"train_max_dd":-selected[1],"train_mean_aggregate_return_pct":selected[2],"train_activity_trades":selected[5],"asset_tests":asset_tests})
+   bh=(test_bars[-1].close/test_bars[0].close-1)*100 if len(test_bars)>1 else 0.0
+   benchmarks[sym]=round(bh,4)
+  folds.append({"fold":len(folds)+1,"train_start":start,"train_end":start+TRAIN-1,"test_start":start+TRAIN+EMBARGO,"test_end":start+TRAIN+EMBARGO+TEST-1,"selected":name,"params":p,"train_stability_score":selected[0],"train_max_dd":-selected[1],"train_mean_aggregate_return_pct":selected[2],"train_activity_trades":selected[5],"asset_tests":asset_tests,"buy_hold_return_pct":benchmarks})
   start+=STEP
  fold_returns=[mean(v["return_pct"] for v in f["asset_tests"].values()) for f in folds]
  all_asset_returns=[v["return_pct"] for f in folds for v in f["asset_tests"].values()]
@@ -71,6 +74,6 @@ def run():
  agg=(wealth-1)*100
  maxdd=max(v["max_drawdown_pct"] for f in folds for v in f["asset_tests"].values())
  positive=sum(x>0 for x in all_asset_returns)/len(all_asset_returns)
- ev={"status":"PROVEN_CROSS_ASSET_RESEARCH","dataset_sha256":{s:sha256(ROOT/"data/real"/f"kraken_{s}_1d.csv") for s in ASSETS},"rows":{s:len(v) for s,v in data.items()},"candidate_count":len(CANDIDATES),"folds":folds,"summary":{"folds":len(folds),"mean_asset_fold_return_pct":round(mean(fold_returns),4),"positive_asset_fold_ratio":round(positive,4),"aggregate_equal_weight_fold_return_pct":round(agg,4),"max_asset_drawdown_pct":round(maxdd,4),"passed_gate":agg>0 and positive>=0.5 and maxdd<=8.0},"cost":{"fee":FEE,"slip":SLIP},"profitability":"UNVERIFIED","live_money_execution":False}
+ ev={"status":"PROVEN_CROSS_ASSET_RESEARCH","dataset_sha256":{s:sha256(ROOT/"data/real"/f"kraken_{s}_1d.csv") for s in ASSETS},"rows":{s:len(v) for s,v in data.items()},"candidate_count":len(CANDIDATES),"folds":folds,"summary":{"folds":len(folds),"mean_asset_fold_return_pct":round(mean(fold_returns),4),"positive_asset_fold_ratio":round(positive,4),"aggregate_equal_weight_fold_return_pct":round(agg,4),"max_asset_drawdown_pct":round(maxdd,4),"buy_hold_aggregate_return_pct":round(bh_agg,4),"strategy_vs_buy_hold_pct":round(agg-bh_agg,4),"passed_gate":agg>0 and positive>=0.5 and maxdd<=8.0},"cost":{"fee":FEE,"slip":SLIP},"profitability":"UNVERIFIED","live_money_execution":False}
  out=ROOT/"evidence/cross_asset_research_ci.json"; out.write_text(json.dumps(ev,indent=2,sort_keys=True)+"\n",encoding="utf-8"); print(json.dumps(ev,indent=2))
 if __name__=="__main__": run()
