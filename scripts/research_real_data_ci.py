@@ -1,10 +1,10 @@
 from __future__ import annotations
-import csv,json,hashlib
+import csv,json,hashlib,sys
 from pathlib import Path
-from astra.core import Bar,backtest,adversary
-from astra.research import Experiment,walk_forward,cost_stress
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
+from astra.core import Bar,backtest,adversary
+from astra.research import Experiment,walk_forward,cost_stress
 DATA=ROOT/"data/real/kraken_BTCUSD_1d.csv"; OUT=ROOT/"evidence/real_data_research_ci.json"
 def sha256(p):
  h=hashlib.sha256()
