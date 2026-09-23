@@ -54,6 +54,12 @@
       "status": "PROVEN_NEGATIVE_BENCHMARK",
       "maturity": "E2E",
       "detail": "100-bar untouched real-data holdout selected from prior research; equal-weight compounded strategy return 26.8301% vs buy-and-hold 40.5521%; positive asset ratio 1.0; max drawdown 16.7243%; no profitability/alpha claim"
+    },
+    {
+      "name": "statistical_reality_check",
+      "status": "PROVEN_STATISTICAL_REALITY_CHECK",
+      "maturity": "E2E",
+      "detail": "Untouched 100-bar multi-asset holdout: strategy 26.8301% vs buy-and-hold 39.7863%; paired daily excess mean 95% moving-block bootstrap CI -0.262287 to 0.051426 percentage points/day; sign-flip tests non-significant; max-of-123 null bootstrap diagnostic approximate p=1.0; selection-bias risk remains HIGH; profitability/alpha UNVERIFIED"
     }
   ]
 }
