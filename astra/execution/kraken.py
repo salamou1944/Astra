@@ -1,23 +1,17 @@
-"""Minimal Kraken Spot execution adapter.
+"""Guarded Kraken Spot execution adapter.
 
-Safety invariants:
-- live trading is OFF unless explicitly enabled at construction/runtime;
-- withdrawal endpoints are not implemented;
-- API credentials are read from environment variables, never source control;
-- order submission requires an explicit live flag;
-- dry-run mode performs request construction without network submission.
+Live submission is fail-closed: ASTRA_LIVE_TRADING must be enabled *and* the
+ExecutionGate must authorize the complete safety chain. Withdrawal endpoints
+are intentionally absent.
 """
 from __future__ import annotations
 
-import base64
-import hashlib
-import hmac
-import os
-import time
+import base64, hashlib, hmac, json, os, time
 from dataclasses import dataclass
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
-import json
+
+from .safety import ExecutionGate
 
 
 @dataclass(frozen=True)
@@ -46,10 +40,10 @@ class KrakenSpotExecutor:
 
     def __init__(self, config: KrakenExecutionConfig):
         self.config = config
-        if not config.live_enabled:
-            return
-        if not config.api_key or not config.api_secret:
-            raise KrakenExecutionError("live execution requires ASTRA_KRAKEN_API_KEY and ASTRA_KRAKEN_API_SECRET")
+        if config.live_enabled and (not config.api_key or not config.api_secret):
+            raise KrakenExecutionError(
+                "live execution requires ASTRA_KRAKEN_API_KEY and ASTRA_KRAKEN_API_SECRET"
+            )
 
     @staticmethod
     def _signature(path: str, nonce: str, payload: dict, secret: str) -> str:
@@ -77,7 +71,8 @@ class KrakenSpotExecutor:
             raise KrakenExecutionError("Kraken API error: " + "; ".join(map(str, result["error"])))
         return result.get("result", {})
 
-    def build_add_order(self, *, pair: str, side: str, ordertype: str, volume: str, price: str | None = None) -> dict:
+    def build_add_order(self, *, pair: str, side: str, ordertype: str, volume: str,
+                        price: str | None = None) -> dict:
         side = side.lower()
         ordertype = ordertype.lower()
         if side not in {"buy", "sell"}:
@@ -93,28 +88,35 @@ class KrakenSpotExecutor:
             payload["price"] = price
         return payload
 
-    def submit_order(self, **order) -> dict:
-        """Submit one Spot order only when live execution is explicitly enabled."""
+    def _submit_order(self, **order) -> dict:
         payload = self.build_add_order(**order)
         return self._private("/0/private/AddOrder", payload)
 
-    def cancel_order(self, txid: str) -> dict:
-        if not txid:
-            raise ValueError("txid is required")
-        return self._private("/0/private/CancelOrder", {"txid": txid})
+    def submit_order(self, **order) -> dict:
+        """Compatibility entry point that is fail-closed for live submission."""
+        if self.config.live_enabled:
+            raise KrakenExecutionError(
+                "direct live submission is blocked; use submit_if_authorized with ExecutionGate"
+            )
+        return self._submit_order(**order)
 
-    def query_open_orders(self) -> dict:
-        return self._private("/0/private/OpenOrders", {})
-
-    def query_orders(self, txid: str | None = None) -> dict:
-        return self._private("/0/private/QueryOrders", {} if txid is None else {"txid": txid})
-
-    def query_balance(self) -> dict:
-        return self._private("/0/private/Balance", {})
-
-    def submit_if_authorized(self, **order) -> dict:
-        """Single explicit gate for live submission; never enables withdrawals."""
+    def submit_if_authorized(
+        self, *, gate: ExecutionGate | None = None,
+        data_valid: bool = False, strategy_valid: bool = False,
+        risk_valid: bool = False, execution_valid: bool = False,
+        reconciliation_valid: bool = False, human_approval: bool = False,
+        **order,
+    ) -> dict:
         if not self.config.live_enabled:
             return {"submitted": False, "mode": "OFF", "reason": "ASTRA_LIVE_TRADING is not enabled"}
-        result = self.submit_order(**order)
+        if gate is None:
+            raise KrakenExecutionError("live submission requires an ExecutionGate")
+        if not gate.authorize(
+            data_valid=data_valid, strategy_valid=strategy_valid,
+            risk_valid=risk_valid, execution_valid=execution_valid,
+            reconciliation_valid=reconciliation_valid,
+            human_approval=human_approval, live_enabled=self.config.live_enabled,
+        ):
+            return {"submitted": False, "mode": "LIVE_BLOCKED", "reason": "execution safety gate denied"}
+        result = self._submit_order(**order)
         return {"submitted": True, "mode": "LIVE_SPOT", "result": result}
