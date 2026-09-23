@@ -61,10 +61,21 @@ def rank_train(bars):
 def run():
  rows=list(csv.DictReader(DATA.open(encoding="utf-8")))
  bars=[Bar(i,float(r["close"])) for i,r in enumerate(rows)]
- folds=[]; start=0
+ folds=[]; selection_diagnostics=[]; start=0
  while start+TRAIN+EMBARGO+TEST<=len(bars):
   train_end=start+TRAIN; test_start=train_end+EMBARGO; test_end=test_start+TEST
   selected=rank_train(bars[start:train_end])
+  # Persist the top stability-ranked candidates for auditability without exposing test data.
+  train_rows=[]
+  for cname,cp,_,_ in CANDIDATES:
+   mid=TRAIN//2
+   a=bars[start:start+mid]; b=bars[start+mid:train_end]
+   ra=backtest_signals(a,signal_for(a,cname,cp),fee=FEE,slip=SLIP)
+   rb=backtest_signals(b,signal_for(b,cname,cp),fee=FEE,slip=SLIP)
+   agg=((1+ra["return_pct"]/100)*(1+rb["return_pct"]/100)-1)*100
+   train_rows.append({"selected":cname,"params":cp,"min_subwindow_return_pct":round(min(ra["return_pct"],rb["return_pct"]),4),"max_subwindow_dd_pct":round(max(ra["max_drawdown_pct"],rb["max_drawdown_pct"]),4),"aggregate_return_pct":round(agg,4)})
+  train_rows.sort(key=lambda x:(x["min_subwindow_return_pct"],-x["max_subwindow_dd_pct"],x["aggregate_return_pct"]),reverse=True)
+  selection_diagnostics.append({"fold":len(folds)+1,"top10":train_rows[:10]})
   name,p=selected[4],selected[5]
   # Context supplies indicator history without allowing any post-test observations.
   context_start=max(0,test_start-int(selected[2]))
@@ -83,7 +94,7 @@ def run():
  for x in returns: wealth*=1+x/100
  aggregate=(wealth-1)*100
  result={"status":"PROVEN_CANDIDATE_RESEARCH","dataset_sha256":sha256(DATA),"rows":len(bars),
-         "candidate_count":len(CANDIDATES),"folds":folds,
+         "candidate_count":len(CANDIDATES),"folds":folds,"selection_diagnostics":selection_diagnostics,
          "summary":{"folds":len(folds),"test_returns":returns,"mean_return_pct":round(mean(returns),4),
                     "positive_fold_ratio":round(sum(x>0 for x in returns)/len(returns),4),
                     "max_drawdown_pct":round(max(dds),4),"aggregate_return_pct":round(aggregate,4),
