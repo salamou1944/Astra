@@ -1,4 +1,10 @@
 {
+  "buy_hold_return_pct": {
+    "BTCUSD": 28.0177,
+    "ETHUSD": 48.5276,
+    "LTCUSD": 31.7495,
+    "SOLUSD": 55.7842
+  },
   "candidate_count": 123,
   "holdout_end_index": 720,
   "holdout_start_index": 621,
@@ -63,5 +69,11 @@
       "stability": -1.1355
     }
   ],
-  "status": "PROVEN_HOLDOUT_VALIDATION"
+  "status": "PROVEN_HOLDOUT_VALIDATION",
+  "summary": {
+    "buy_hold_equal_weight_compounded_return_pct": 40.5521,
+    "equal_weight_compounded_return_pct": 26.8301,
+    "max_drawdown_pct": 16.7243,
+    "positive_asset_ratio": 1.0
+  }
 }
