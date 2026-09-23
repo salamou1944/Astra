@@ -48,3 +48,10 @@ def long_momentum(bars, window=30, threshold=0.0):
         ret=p/c[i-window]-1
         out.append(1 if ret > threshold/100 else 0)
     return out
+
+
+def long_trend(bars, fast=20, slow=80):
+    c=_closes(bars); f=sma(c,fast); s=sma(c,slow); out=[]
+    for i in range(len(c)):
+        out.append(0 if f[i] is None or s[i] is None else (1 if f[i]>s[i] else 0))
+    return out
