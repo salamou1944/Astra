@@ -6,7 +6,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from astra.core import Bar,backtest_signals,backtest
-from astra.strategies import trend,mean_reversion,breakout
+from astra.strategies import trend,mean_reversion,breakout,long_momentum
 
 DATA=ROOT/"data/real/kraken_BTCUSD_1d.csv"
 OUT=ROOT/"evidence/real_data_candidate_research_ci.json"
@@ -34,7 +34,7 @@ for w in (10,15,20,30,40,60,80):
  CANDIDATES.append(("breakout",{"window":w},breakout,w))
 
 def signal_for(bars,name,params):
- return {"trend":trend,"mean_reversion":mean_reversion,"breakout":breakout}[name](bars,**params)
+ return {"trend":trend,"mean_reversion":mean_reversion,"breakout":breakout,"long_momentum":long_momentum}[name](bars,**params)
 
 def rank_train(bars):
  rows=[]
