@@ -1,0 +1,27 @@
+name: ASTRA HUMAN APPROVAL GATE
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "astra/execution/safety.py"
+      - "scripts/human_approval_gate_ci.py"
+      - ".github/workflows/human-approval-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/human_approval_gate_ci.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: astra-human-approval-gate-evidence
+          path: evidence/human_approval_gate_ci.json
