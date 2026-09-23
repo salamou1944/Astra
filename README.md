@@ -10,8 +10,11 @@ ASTRA now has a reproducibly verified real-data boundary through a GitHub-hosted
 - REAL_DATA: **PROVEN**.
 - Source: Kraken public REST API.
 - Dataset: BTC/USD daily OHLCV, **721 rows**, 2024-10-03 through 2026-09-23.
+- Multi-asset REAL_DATA: **PROVEN** for BTC/USD, ETH/USD, SOL/USD, LTC/USD; **721 rows each**.
 - Dataset SHA-256: `fb3598099d2beef502a8a34dedf21cebd64236917780fd6b55821c9082993060`.
 - Research/OOS: executed on the verified real dataset.
+- Candidate tournament: **123 candidates**; single-asset gate **FAIL**.
+- Cross-asset research: **4 assets × 4 chronological folds**; gate **FAIL**.
 - Robustness: adversarial and cost-stress executed.
 - Risk/shadow: executed with live-money execution OFF.
 
@@ -27,7 +30,11 @@ The real-data run did **not** pass ASTRA's research gate:
 - Adversarial survival ratio: **0.0**
 - Research gate: **FAIL**
 
-Therefore profitability/alpha remains **UNVERIFIED**. The real dataset is genuine evidence; the strategy result is negative evidence, not a success claim.
+Therefore profitability/alpha remains **UNVERIFIED**. The real datasets are genuine evidence; the strategy results are negative evidence, not a success claim.
+
+### Cross-asset result
+
+The same candidate families were evaluated without per-asset parameter selection across four verified Kraken markets. The equal-weight fold aggregate was **-6.8715%**, the positive asset-fold ratio was **25%**, and the worst asset-level drawdown was **37.3515%**. The gate failed. This is a stronger rejection signal than the BTC-only tournament and prevents treating a single favorable asset/regime as sufficient evidence.
 
 ## Safety
 
