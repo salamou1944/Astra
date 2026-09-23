@@ -1,0 +1,4 @@
+ASTRA QUANT LAB — LOCAL VERIFIED DEMO
+bars=600 return_pct=-0.8351 max_drawdown_pct=2.0015 trades=11
+adversary_survival=1.00 adversary_passed=True
+paper_position=1.0 live_money_execution=False

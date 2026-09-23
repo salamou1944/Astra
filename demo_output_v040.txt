@@ -1,0 +1,6 @@
+folds= 6
+test_returns= [0.2395, 0.4521, 0.109, 0.0431, 0.1162, -0.0724]
+mean_test_return_pct= 0.1479
+positive_fold_ratio= 0.8333
+max_drawdown_pct= 1.0997
+passed= True
