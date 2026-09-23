@@ -41,3 +41,8 @@ The same candidate families were evaluated without per-asset parameter selection
 Live-money execution is **OFF**. The real-data risk/shadow run submitted **0 broker orders** and triggered the configured max-drawdown halt.
 
 See `VERIFICATION.md`, `REAL_DATA_RUNBOOK.md`, and the persisted evidence under `evidence/`.
+
+
+## Untouched holdout validation
+
+A final 100-bar period (indices 621-720) was reserved and not used for candidate selection. The repeatedly selected `long_momentum(window=30, threshold=0)` was evaluated on that holdout across BTC/USD, ETH/USD, SOL/USD, and LTC/USD. The equal-weight compounded strategy return was **26.8301%**, versus **40.5521%** for buy-and-hold over the same asset holdout; maximum asset drawdown was **16.7243%**. This is validation evidence, not a profitability claim.
