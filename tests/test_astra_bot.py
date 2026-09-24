@@ -16,12 +16,8 @@ def _bars(n=40):
     start = datetime(2026, 1, 1, tzinfo=timezone.utc)
     return [
         bot.Bar(
-            t=start + timedelta(days=i),
-            o=100 + i,
-            h=101 + i,
-            l=99 + i,
-            c=100 + i,
-            v=10,
+            t=int((start + timedelta(days=i)).timestamp()),
+            close=100 + i,
         )
         for i in range(n)
     ]
