@@ -1,0 +1,61 @@
+# Config file for Appveyor
+# Based of Reference at: https://www.appveyor.com/docs/appveyor-yml/
+
+## General
+
+# Version formatting
+# The bit before the + sign should always match the one in setup.py.
+version: "0.3.0+{branch}.{build}"
+
+# Do not build on tags (GitHub and BitBucket)
+skip_tags: true
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
+
+## Environment
+
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+# set clone depth
+clone_depth: 5
+
+environment:
+  matrix:
+    - MSYS2_ARCH: x86_64
+      MSYSTEM: MINGW64
+    - MSYS2_ARCH: i686
+      MSYSTEM: MINGW32
+
+
+## Script phases
+
+# Run before everything else, including repository cloning.
+init:
+  - dir c:\
+  - PATH C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;C:\msys64\bin;%PATH%
+  
+# Install dependencies for Styrene (not Styrene itself)
+install:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - bash ci\installdeps.sh
+
+# Override for the msbuild default
+build_script:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - bash ci\build.sh
+
+# Override the built-in test phase
+test_script:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - bash ci\tests.sh
+
+
+## Build artefacts.
+
+artifacts:
+  - path: out\*.whl
+  - path: out\*\*.exe
+  - path: out\*\*.zip
