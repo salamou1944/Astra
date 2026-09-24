@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from decimal import Decimal
 from unittest.mock import patch
 
@@ -12,9 +12,10 @@ import scripts.astra_bot as bot
 
 
 def _bars(n=40):
+    start = datetime(2026, 1, 1, tzinfo=timezone.utc)
     return [
         bot.Bar(
-            ts=datetime(2026, 1, 1 + i, tzinfo=timezone.utc),
+            ts=start + timedelta(days=i),
             open=100 + i,
             high=101 + i,
             low=99 + i,
