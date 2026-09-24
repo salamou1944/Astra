@@ -52,6 +52,10 @@ class BotSnapshot:
     live_order_submitted: bool
 
 
+def _timestamp(t: int) -> str:
+    return datetime.fromtimestamp(int(t), tz=timezone.utc).isoformat()
+
+
 def fetch_ohlc(*, pair: str = PAIR, interval: int = INTERVAL, timeout: float = 15.0) -> list[Bar]:
     req = Request(
         f"{KRAKEN_URL}?pair={pair}&interval={interval}",
@@ -64,19 +68,10 @@ def fetch_ohlc(*, pair: str = PAIR, interval: int = INTERVAL, timeout: float = 1
     result = payload["result"]
     pair_key = next(k for k in result if k != "last")
     rows = result[pair_key]
-    bars = []
-    for row in rows:
-        ts = datetime.fromtimestamp(int(row[0]), tz=timezone.utc)
-        bars.append(
-            Bar(
-                ts=ts,
-                open=float(row[1]),
-                high=float(row[2]),
-                low=float(row[3]),
-                close=float(row[4]),
-                volume=float(row[6]),
-            )
-        )
+    bars = [
+        Bar(t=int(row[0]), close=float(row[4]))
+        for row in rows
+    ]
     if len(bars) < WINDOW + 2:
         raise RuntimeError(f"insufficient public market data: {len(bars)} bars")
     return bars
@@ -108,7 +103,7 @@ def run_once(*, previous_signal: int = 0, quantity: Decimal = DEFAULT_QTY) -> Bo
                 quantity=str(quantity),
                 order_type="market",
                 strategy_id="long_momentum_w30_t0",
-                signal_timestamp=last.ts.isoformat(),
+                signal_timestamp=_timestamp(last.t),
             )
             result = lifecycle.submit_intent(intent)
             lifecycle.advance(symbol=PAIR, market_price=Decimal(str(last.close)))
@@ -140,7 +135,7 @@ def run_once(*, previous_signal: int = 0, quantity: Decimal = DEFAULT_QTY) -> Bo
         pair=PAIR,
         interval=INTERVAL,
         observed_bars=len(bars),
-        last_timestamp=last.ts.isoformat(),
+        last_timestamp=_timestamp(last.t),
         last_price=str(last.close),
         signal=signal,
         previous_signal=previous_signal,
