@@ -1,0 +1,41 @@
+name: ASTRA BOT SMOKE
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/astra_bot.py"
+      - "tests/test_astra_bot.py"
+      - ".github/workflows/bot-smoke.yml"
+      - "astra/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bot-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Run bot unit tests
+        run: python -m unittest discover -s tests -p 'test_astra_bot.py' -v
+      - name: Run bot against public Kraken data
+        run: python scripts/astra_bot.py
+      - name: Assert no live order
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open("evidence/astra_bot_snapshot.json"))
+          assert d["mode"] == "PAPER"
+          assert d["live_order_submitted"] is False
+          assert d["kill_switch_halted"] is False
+          print("ASTRA BOT SMOKE: PROVEN_PAPER_BOT")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: astra-bot-smoke-evidence
+          path: evidence/astra_bot_snapshot.json
