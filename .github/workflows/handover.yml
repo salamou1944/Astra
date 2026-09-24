@@ -1,0 +1,31 @@
+name: ASTRA HANDOVER
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "HANDOVER.md"
+      - "scripts/handover_manifest_ci.py"
+      - ".github/workflows/handover.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "37 0 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  handover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Generate handover manifest
+        run: python scripts/handover_manifest_ci.py
+      - name: Upload handover evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: astra-handover-manifest
+          path: evidence/handover_manifest.json
