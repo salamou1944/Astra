@@ -1,9 +1,36 @@
 from dataclasses import dataclass
 import math, random
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, init=False)
 class Bar:
-    t:int; close:float
+    t: object
+    close: float
+    o: float
+    h: float
+    l: float
+    c: float
+    v: float
+
+    def __init__(self, t, close=None, *, o=None, h=None, l=None, c=None, v=0.0):
+        if close is None and c is None:
+            raise TypeError("Bar requires close or c")
+        if close is None:
+            close = c
+        if c is None:
+            c = close
+        if o is None:
+            o = close
+        if h is None:
+            h = max(o, c)
+        if l is None:
+            l = min(o, c)
+        object.__setattr__(self, "t", t)
+        object.__setattr__(self, "close", float(close))
+        object.__setattr__(self, "o", float(o))
+        object.__setattr__(self, "h", float(h))
+        object.__setattr__(self, "l", float(l))
+        object.__setattr__(self, "c", float(c))
+        object.__setattr__(self, "v", float(v))
 
 def market(n=600, seed=7):
     rng=random.Random(seed); p=100.0; out=[]
