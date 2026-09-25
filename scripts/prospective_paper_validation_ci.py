@@ -1,5 +1,5 @@
 from __future__ import annotations
-import csv, json, hashlib, math, sys
+import json, hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.request import Request, urlopen
@@ -10,13 +10,19 @@ ASSETS=("BTCUSD","ETHUSD","SOLUSD","LTCUSD")
 MIN_FORWARD_BARS=30
 FEE=.0005
 SLIP=.0002
-HOLDOUT_END_INDEX=720
+HOLDOUT_END_TIMESTAMP="2026-09-23T00:00:00Z"
+HOLDOUT_END_TS=int(datetime.fromisoformat(HOLDOUT_END_TIMESTAMP.replace("Z","+00:00")).timestamp())
 WINDOW=30
 THRESHOLD=0.0
 
 def fetch(pair):
-    url=f"https://api.kraken.com/0/public/OHLC?pair={pair}&interval=1440"
-    with urlopen(Request(url,headers={"User-Agent":"ASTRA-PROSPECTIVE-PAPER/1.0","Accept":"application/json"}),timeout=30) as r:
+    # Kraken's OHLC endpoint is bounded to recent candles. Do not use a fixed
+    # row index against the current response: that can silently keep the
+    # prospective sample at zero forever. Fetch from the fixed holdout boundary
+    # and retain WINDOW bars of context before measuring post-holdout bars.
+    since=max(0,HOLDOUT_END_TS-WINDOW*86400)
+    url=f"https://api.kraken.com/0/public/OHLC?pair={pair}&interval=1440&since={since}"
+    with urlopen(Request(url,headers={"User-Agent":"ASTRA-PROSPECTIVE-PAPER/1.1","Accept":"application/json"}),timeout=30) as r:
         if getattr(r,"status",None)!=200: raise RuntimeError(f"HTTP {getattr(r,'status',None)}")
         p=json.loads(r.read())
     if p.get("error"): raise RuntimeError(f"Kraken error: {p['error']}")
@@ -39,8 +45,7 @@ def strategy_returns(rows, start):
         s=sig[i-1]
         if s!=prev: trades+=1; prev=s
         r=closes[i]/closes[i-1]-1
-        if s:
-            r-=FEE+SLIP
+        if s: r-=FEE+SLIP
         eq*=1+r
         peak=max(peak,eq); dd=max(dd,1-eq/peak)
     return {"return_pct":(eq-1)*100,"max_drawdown_pct":dd*100,"trades":trades}
@@ -51,13 +56,24 @@ def main():
     for pair in ASSETS:
         try:
             rows=fetch(pair)
-            n=len(rows)
-            forward=max(0,n-(HOLDOUT_END_INDEX+1))
-            item={"rows":n,"forward_bars_after_holdout":forward,"dataset_sha256":sha(rows)}
-            if forward:
-                item["performance"]=strategy_returns(rows,HOLDOUT_END_INDEX+1)
-            else:
-                item["performance"]=None
+            timestamps=[int(float(x[0])) for x in rows]
+            forward_indices=[i for i,ts in enumerate(timestamps) if ts>HOLDOUT_END_TS]
+            forward=len(forward_indices)
+            first_forward=min(forward_indices) if forward else None
+            item={
+                "rows_retrieved":len(rows),
+                "forward_bars_after_holdout":forward,
+                "first_forward_timestamp":(
+                    datetime.fromtimestamp(timestamps[first_forward],tz=timezone.utc).isoformat().replace("+00:00","Z")
+                    if first_forward is not None else None
+                ),
+                "last_timestamp":(
+                    datetime.fromtimestamp(timestamps[-1],tz=timezone.utc).isoformat().replace("+00:00","Z")
+                    if timestamps else None
+                ),
+                "dataset_sha256":sha(rows)
+            }
+            item["performance"]=strategy_returns(rows,first_forward) if forward else None
             item["sufficient_forward_sample"]=forward>=MIN_FORWARD_BARS
             results[pair]=item
         except Exception as e:
@@ -71,7 +87,7 @@ def main():
       "method":"fixed prospective paper evaluation after untouched holdout",
       "fixed_strategy":{"name":"long_momentum","window":WINDOW,"threshold":THRESHOLD},
       "costs":{"fee":FEE,"slippage":SLIP},
-      "holdout_end_index":HOLDOUT_END_INDEX,
+      "holdout_end_timestamp":HOLDOUT_END_TIMESTAMP,
       "minimum_forward_bars":MIN_FORWARD_BARS,
       "assets":results,
       "errors":errors,
