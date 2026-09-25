@@ -1,0 +1,28 @@
+{
+  "status": "INSUFFICIENT_FORWARD_SAMPLE",
+  "verified_at": "2026-09-25T02:33:24.391202Z",
+  "workflow_run_id": 36086735104,
+  "head_sha": "881a240b68b81ea4f3183c852d22bf8c4158cd99",
+  "source": "Kraken public REST API",
+  "holdout_end_timestamp": "2026-09-23T00:00:00Z",
+  "minimum_forward_bars_per_asset": 30,
+  "forward_bars_per_asset": {
+    "BTCUSD": 2,
+    "ETHUSD": 2,
+    "SOLUSD": 2,
+    "LTCUSD": 2
+  },
+  "remaining_bars_per_asset": {
+    "BTCUSD": 28,
+    "ETHUSD": 28,
+    "SOLUSD": 28,
+    "LTCUSD": 28
+  },
+  "errors": [],
+  "selection_touched_forward_data": false,
+  "live_money_execution": false,
+  "automatic_live_orders": false,
+  "profitability": "UNVERIFIED",
+  "alpha": "UNVERIFIED",
+  "next_transition": "require 30 post-holdout daily bars per asset"
+}
