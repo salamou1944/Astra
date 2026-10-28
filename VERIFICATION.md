@@ -44,13 +44,15 @@ The earlier 2026-09-23 local barrier remains valid as a local-environment findin
 
 ## Binance empty-response regression — 2026-10-28
 
-- Status: **GITHUB ACTIONS PR VALIDATION PASSED; DOCUMENTATION UPDATED**.
+- Status: **GITHUB ACTIONS PR VALIDATION PASSED; VERIFICATION UPDATED TO LATEST RUN**.
 - Branch: `test/binance-empty-response-2026-10-28`.
+- PR: [#1](https://github.com/salamou1944/Astra/pull/1), still open and draft.
+- HEAD commit: `55a5fea504dfcbf96fa7bc30bc2eab1be7fb94ba`.
 - Test: `tests/test_v08.py::test_binance_empty_response_raises_value_error`.
 - Scope: an empty first Binance response must raise `ValueError` matching `no bars returned for BTCUSDT`.
-- GitHub Actions run: `ASTRA CI`, run ID `40628393123`; all three jobs passed: `test`, `execution-boundary`, and `candidate-real-data`.
-- Test job output: `pytest -q` reported **88 passed, 4 subtests passed in 1.10s**.
-- Execution boundary: the Actions checkout ran the PR merge ref `721adf6e4cfd57db5bb013b98f2c38d15691f444`, which combines head commit `2bb4df124f7179abf80f262c4e33a766c2454642` with base commit `11a42643279e7323097cec4b845bf6d0cc179144`. This confirms successful PR-merge-ref CI, not a separate direct checkout run of the branch head.
+- Latest GitHub Actions run: [ASTRA CI #209](https://github.com/salamou1944/Astra/actions/runs/40629039202), run ID `40629039202`; completed successfully. Jobs `test`, `execution-boundary`, and `candidate-real-data` all passed.
+- Test job output: `pytest -q` reported **88 passed, 4 subtests passed in 0.94s**.
+- Execution boundary: Actions checked out PR merge ref `f8e675ee15c59cc0149d3be3abdad1d4b2600df2`, combining the current PR HEAD `55a5fea504dfcbf96fa7bc30bc2eab1be7fb94ba` with base commit `11a42643279e7323097cec4b845bf6d0cc179144`. This confirms successful CI on the current PR merge ref; it is **not** evidence of a separate direct branch-head checkout run.
 - Local isolated result: **1 passed (reported)**; this was not a run from a checkout of the actual GitHub branch.
-- Production changes: **NONE** in the PR diff; the changed paths are `VERIFICATION.md` and `tests/test_v08.py`.
+- Production changes: **NONE** in the PR diff; changed paths are `VERIFICATION.md` and `tests/test_v08.py`.
 - Merge: **NOT APPROVED**; PR #1 remains open as a draft. Do not merge unless the user explicitly approves.
