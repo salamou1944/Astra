@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
-"""Publish a deterministic, no-model status snapshot for ASTRA PR #1.
-
-Uses only GitHub's built-in GITHUB_TOKEN. It does not run an AI agent, trade,
-modify repository files, or trigger external paid services.
-"""
+"""Publish a deterministic, no-model status snapshot for ASTRA PR #1."""
 from __future__ import annotations
 
 import json
 import os
 from datetime import datetime, timezone
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 API = "https://api.github.com"
@@ -29,22 +26,47 @@ def request_json(url: str, token: str, method: str = "GET", payload: dict | None
             "User-Agent": "astra-coordination-status",
         },
     )
+    # Fail loudly on API/network errors; a failed report must not look successful.
     with urlopen(req, timeout=20) as response:
         raw = response.read()
     return json.loads(raw.decode("utf-8")) if raw else {}
 
 
+def should_process_event(event_name: str, issue: dict, comment_user: str = "") -> bool:
+    # issue number 1 is the canonical PR mailbox in this repository.
+    # GITHUB_TOKEN-authored comments do not trigger new workflows, preventing loops.
+    return event_name != "issue_comment" or issue.get("number") == 1
+
+
+def find_status_comment(comments: list[dict]) -> dict | None:
+    return next((c for c in reversed(comments) if MARKER in (c.get("body") or "")), None)
+
+
+def _run_matches_pr_head(run: dict, head_sha: str) -> bool:
+    if run.get("head_sha") == head_sha:
+        return True
+    # GitHub may run PR workflows against a synthetic refs/pull/<n>/merge SHA.
+    return any(
+        (pr.get("head") or {}).get("sha") == head_sha
+        for pr in (run.get("pull_requests") or [])
+    )
+
+
+def select_latest_relevant_run(pr: dict, runs: list[dict]) -> dict | None:
+    head_sha = (pr.get("head") or {}).get("sha", "")
+    matching = [run for run in runs if _run_matches_pr_head(run, head_sha)]
+    matching.sort(key=lambda run: run.get("created_at", ""), reverse=True)
+    return matching[0] if matching else None
+
+
 def build_status_body(pr: dict, runs: list[dict], timestamp: str | None = None) -> str:
     timestamp = timestamp or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     head = (pr.get("head") or {}).get("sha", "unknown")
-    head_short = head[:12]
-    matching = [r for r in runs if r.get("head_sha") == head]
-    matching.sort(key=lambda r: r.get("created_at", ""), reverse=True)
-    if matching:
-        run = matching[0]
+    run = select_latest_relevant_run(pr, runs)
+    if run:
         ci = f'[{run.get("name", "GitHub Actions")} #{run.get("run_number", "?")}]({run.get("html_url", "")}) — {run.get("status", "unknown")} / {run.get("conclusion") or "pending"}'
     else:
-        ci = "No workflow run found for the current PR head yet."
+        ci = "No CI run matched this PR head or its synthetic merge ref in the latest Actions results; verify the PR Checks tab."
     state = pr.get("state", "unknown").upper()
     draft = "yes" if pr.get("draft") else "no"
     return (
@@ -53,25 +75,13 @@ def build_status_body(pr: dict, runs: list[dict], timestamp: str | None = None) 
         f"- Updated: {timestamp}\n"
         f"- PR: [#{pr.get('number', 1)} — {pr.get('title', 'ASTRA')}]({pr.get('html_url', '')})\n"
         f"- State: {state}; draft: {draft}; merged: {str(bool(pr.get('merged'))).lower()}\n"
-        f"- Current head: `{head_short}`\n"
-        f"- Latest CI for this exact head: {ci}\n\n"
+        f"- Current head: `{head[:12]}`\n"
+        f"- Latest relevant CI (PR head or synthetic merge ref): {ci}\n\n"
         "**Scope:** deterministic GitHub metadata only. This does not wake or run Agent #1/#2, provide AI review, prove profitability, or authorize merging/trading. Read the conversation comments for human/agent handoffs. No secrets are read or printed."
     )
 
 
-def main() -> None:
-    token = os.environ["GITHUB_TOKEN"]
-    repo = os.environ["GITHUB_REPOSITORY"]
-    pr_number = int(os.environ.get("PR_NUMBER", "1"))
-    base = f"{API}/repos/{repo}"
-    pr = request_json(f"{base}/pulls/{pr_number}", token)
-    head_sha = (pr.get("head") or {}).get("sha", "")
-    runs_payload = request_json(
-        f"{base}/actions/runs?head_sha={head_sha}&per_page=20", token
-    )
-    runs = runs_payload.get("workflow_runs", [])
-    body = build_status_body(pr, runs)
-
+def publish_status_comment(base: str, pr_number: int, token: str, body: str) -> str:
     comments = []
     page = 1
     while True:
@@ -82,10 +92,7 @@ def main() -> None:
         if len(batch) < 100:
             break
         page += 1
-    existing = next(
-        (c for c in reversed(comments) if MARKER in (c.get("body") or "")),
-        None,
-    )
+    existing = find_status_comment(comments)
     if existing:
         request_json(
             f"{base}/issues/comments/{existing['id']}",
@@ -93,17 +100,32 @@ def main() -> None:
             method="PATCH",
             payload={"body": body},
         )
-        action = f"Updated existing status comment #{existing['id']}."
-    else:
-        created = request_json(
-            f"{base}/issues/{pr_number}/comments",
-            token,
-            method="POST",
-            payload={"body": body},
-        )
-        action = f"Created status comment #{created.get('id', 'unknown')}."
+        return f"Updated existing status comment #{existing['id']}."
+    created = request_json(
+        f"{base}/issues/{pr_number}/comments",
+        token,
+        method="POST",
+        payload={"body": body},
+    )
+    return f"Created status comment #{created.get('id', 'unknown')}."
+
+
+def main() -> None:
+    token = os.environ["GITHUB_TOKEN"]
+    repo = os.environ["GITHUB_REPOSITORY"]
+    pr_number = int(os.environ.get("PR_NUMBER", "1"))
+    base = f"{API}/repos/{repo}"
+    pr = request_json(f"{base}/pulls/{pr_number}", token)
+    # Inspect recent pull_request runs too: their run SHA may be a synthetic merge ref.
+    runs_payload = request_json(
+        f"{base}/actions/runs?event=pull_request&per_page=100", token
+    )
+    runs = runs_payload.get("workflow_runs", [])
+    body = build_status_body(pr, runs)
+    action = publish_status_comment(base, pr_number, token, body)
+    head_sha = (pr.get("head") or {}).get("sha", "")
     print(action)
-    print(f"PR #{pr_number}; head={head_sha[:12]}; matching_runs={len([r for r in runs if r.get('head_sha') == head_sha])}")
+    print(f"PR #{pr_number}; head={head_sha[:12]}; relevant_runs={sum(1 for run in runs if _run_matches_pr_head(run, head_sha))}")
 
 
 if __name__ == "__main__":
