@@ -18,11 +18,9 @@ concurrency:
 
 jobs:
   publish-status:
-    if: >-
-      ${{ github.event_name != 'issue_comment' ||
-          (github.event.issue.number == 1 &&
-           github.event.issue.pull_request &&
-           github.event.comment.user.login != 'github-actions[bot]') }}
+    # Issue/PR #1 is the canonical mailbox. GITHUB_TOKEN-authored comments do
+    # not trigger workflows, so updating the status comment cannot loop.
+    if: ${{ github.event_name != 'issue_comment' || github.event.issue.number == 1 }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
