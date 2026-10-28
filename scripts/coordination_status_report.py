@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import os
 from datetime import datetime, timezone
-from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 API = "https://api.github.com"
@@ -33,13 +32,18 @@ def request_json(url: str, token: str, method: str = "GET", payload: dict | None
 
 
 def should_process_event(event_name: str, issue: dict, comment_user: str = "") -> bool:
-    # issue number 1 is the canonical PR mailbox in this repository.
-    # GITHUB_TOKEN-authored comments do not trigger new workflows, preventing loops.
+    # issue number 1 is the canonical mailbox in this repository.
+    # GITHUB_TOKEN-authored comments do not trigger workflows, preventing loops.
     return event_name != "issue_comment" or issue.get("number") == 1
 
 
 def find_status_comment(comments: list[dict]) -> dict | None:
-    return next((c for c in reversed(comments) if MARKER in (c.get("body") or "")), None)
+    # Only a dedicated status comment starts with the marker. A human comment
+    # merely discussing the marker must never be selected for PATCH.
+    return next(
+        (c for c in reversed(comments) if (c.get("body") or "").startswith(MARKER + "\n")),
+        None,
+    )
 
 
 def _run_matches_pr_head(run: dict, head_sha: str) -> bool:
