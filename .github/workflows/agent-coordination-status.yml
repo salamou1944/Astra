@@ -1,0 +1,36 @@
+name: ASTRA Agent Coordination Status
+
+on:
+  schedule:
+    - cron: "17 */4 * * *"
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
+
+permissions:
+  actions: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  publish-status:
+    if: >-
+      ${{ github.event_name != 'issue_comment' ||
+          (github.event.issue.number == 1 &&
+           github.event.issue.pull_request &&
+           github.event.comment.user.login != 'github-actions[bot]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Update the single stable status comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: "1"
+        run: python scripts/coordination_status_report.py
