@@ -9,8 +9,7 @@ on:
 
 permissions:
   actions: read
-  issues: write
-  pull-requests: read
+  pull-requests: write
 
 concurrency:
   group: astra-coordination-status-pr1
