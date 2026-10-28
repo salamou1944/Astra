@@ -12,6 +12,10 @@ permissions:
   issues: write
   pull-requests: read
 
+concurrency:
+  group: astra-coordination-status-pr1
+  cancel-in-progress: false
+
 jobs:
   publish-status:
     if: >-
