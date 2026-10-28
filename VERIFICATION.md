@@ -44,11 +44,13 @@ The earlier 2026-09-23 local barrier remains valid as a local-environment findin
 
 ## Binance empty-response regression — 2026-10-28
 
-- Status: **TEST ADDED; BRANCH VERIFICATION PENDING**.
+- Status: **GITHUB ACTIONS PR VALIDATION PASSED; DOCUMENTATION UPDATED**.
 - Branch: `test/binance-empty-response-2026-10-28`.
 - Test: `tests/test_v08.py::test_binance_empty_response_raises_value_error`.
 - Scope: an empty first Binance response must raise `ValueError` matching `no bars returned for BTCUSDT`.
+- GitHub Actions run: `ASTRA CI`, run ID `40628393123`; all three jobs passed: `test`, `execution-boundary`, and `candidate-real-data`.
+- Test job output: `pytest -q` reported **88 passed, 4 subtests passed in 1.10s**.
+- Execution boundary: the Actions checkout ran the PR merge ref `721adf6e4cfd57db5bb013b98f2c38d15691f444`, which combines head commit `2bb4df124f7179abf80f262c4e33a766c2454642` with base commit `11a42643279e7323097cec4b845bf6d0cc179144`. This confirms successful PR-merge-ref CI, not a separate direct checkout run of the branch head.
 - Local isolated result: **1 passed (reported)**; this was not a run from a checkout of the actual GitHub branch.
-- GitHub branch execution: **NOT VERIFIED**; no CI check/run was found for the test commit at the time of recording.
-- Production changes: **NONE**.
-- Merge: **NOT APPROVED**; do not merge until the test is executed against the actual branch and its result is reviewed.
+- Production changes: **NONE** in the PR diff; the changed paths are `VERIFICATION.md` and `tests/test_v08.py`.
+- Merge: **NOT APPROVED**; PR #1 remains open as a draft. Do not merge unless the user explicitly approves.
