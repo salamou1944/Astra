@@ -53,7 +53,7 @@ def build_status_body(pr: dict, runs: list[dict], timestamp: str | None = None) 
         "## ASTRA coordination status (automated snapshot)\n\n"
         f"- Updated: {timestamp}\n"
         f"- PR: [#{pr.get('number', 1)} — {pr.get('title', 'ASTRA')}]({pr.get('html_url', '')})\n"
-        f"- State: {state}; draft: {draft}; merged: {str(bool(pr.get('merged')).lower())}\n"
+        f"- State: {state}; draft: {draft}; merged: {str(bool(pr.get('merged'))).lower()}\n"
         f"- Current head: `{head_short}`\n"
         f"- Latest CI for this exact head: {ci}\n\n"
         "**Scope:** deterministic GitHub metadata only. This does not wake or run Agent #1/#2, provide AI review, prove profitability, or authorize merging/trading. Read the conversation comments for human/agent handoffs. No secrets are read or printed."
