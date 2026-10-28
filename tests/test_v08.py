@@ -1,4 +1,5 @@
 import json
+import pytest
 from unittest.mock import patch
 from astra.core import Bar, backtest_signals
 from astra.binance import fetch_klines, to_ohlcv
@@ -27,3 +28,8 @@ def test_explicit_signal_costs_are_applied():
     bars=[Bar(i,100+i) for i in range(10)]; sig=[0,1,1,0,-1,-1,0,1,0,0]
     free=backtest_signals(bars,sig,fee=0,slip=0); costly=backtest_signals(bars,sig,fee=.01,slip=.01)
     assert costly["return_pct"] < free["return_pct"]
+
+def test_binance_empty_response_raises_value_error():
+    with patch("astra.binance.urlopen", return_value=Resp([])):
+        with pytest.raises(ValueError, match="no bars returned for BTCUSDT"):
+            fetch_klines()
