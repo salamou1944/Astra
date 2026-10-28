@@ -1,4 +1,3 @@
-import json
 from urllib.error import HTTPError
 from unittest.mock import patch
 
@@ -70,13 +69,14 @@ def test_event_filter_only_processes_canonical_pr_mailbox():
     assert not reporter.should_process_event("issue_comment", {"number": 2}, "human")
 
 
-def test_find_status_comment_updates_existing_marker_instead_of_duplicating():
+def test_find_status_comment_ignores_human_comments_that_only_mention_marker():
     comments = [
         {"id": 10, "body": "ordinary comment"},
         {"id": 11, "body": "older " + reporter.MARKER},
-        {"id": 12, "body": "latest " + reporter.MARKER},
+        {"id": 12, "body": "discussion about " + reporter.MARKER},
+        {"id": 13, "body": reporter.MARKER + "\n## ASTRA coordination status"},
     ]
-    assert reporter.find_status_comment(comments)["id"] == 12
+    assert reporter.find_status_comment(comments)["id"] == 13
 
 
 def test_api_failure_is_not_silently_reported_as_success():
@@ -89,7 +89,10 @@ def test_api_failure_is_not_silently_reported_as_success():
 def test_status_comment_update_uses_existing_comment_id():
     with patch.object(reporter, "request_json") as api:
         api.side_effect = [
-            [{"id": 99, "body": "keep " + reporter.MARKER}],
+            [
+                {"id": 88, "body": "conversation mentions " + reporter.MARKER},
+                {"id": 99, "body": reporter.MARKER + "\n## ASTRA coordination status"},
+            ],
             {},
         ]
         result = reporter.publish_status_comment("https://api.github.com/repos/o/r", 1, "token", "new body")
