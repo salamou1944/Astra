@@ -48,7 +48,10 @@ def test_synthetic_merge_run_matches_pr_head_via_pull_requests_metadata():
         "created_at": "2026-10-28T05:00:00Z",
     }]
     assert reporter.select_latest_relevant_run(pr_payload(), runs) == runs[0]
-    assert "synthetic merge ref" in reporter.build_status_body(pr_payload(), [], "fixed time").lower()
+    body = reporter.build_status_body(pr_payload(), runs, "fixed time")
+    assert "ASTRA CI #220" in body
+    assert "completed / success" in body
+    assert "synthetic merge ref" in body.lower()
 
 
 def test_old_head_run_is_not_misattributed():
