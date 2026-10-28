@@ -41,3 +41,14 @@ The earlier 2026-09-23 local barrier remains valid as a local-environment findin
 ### Untouched holdout evidence
 
 `evidence/holdout_validation_ci.json` records a 100-bar holdout excluded from candidate selection. The selected candidate was positive on all four assets, but the equal-weight compounded result (**26.8301%**) remained below the same-period buy-and-hold benchmark (**40.5521%**) and max drawdown reached **16.7243%**. Profitability/alpha remains unverified.
+
+## Binance empty-response regression — 2026-10-28
+
+- Status: **TEST ADDED; BRANCH VERIFICATION PENDING**.
+- Branch: `test/binance-empty-response-2026-10-28`.
+- Test: `tests/test_v08.py::test_binance_empty_response_raises_value_error`.
+- Scope: an empty first Binance response must raise `ValueError` matching `no bars returned for BTCUSDT`.
+- Local isolated result: **1 passed (reported)**; this was not a run from a checkout of the actual GitHub branch.
+- GitHub branch execution: **NOT VERIFIED**; no CI check/run was found for the test commit at the time of recording.
+- Production changes: **NONE**.
+- Merge: **NOT APPROVED**; do not merge until the test is executed against the actual branch and its result is reviewed.
