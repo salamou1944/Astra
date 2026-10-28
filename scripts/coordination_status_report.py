@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import os
 from datetime import datetime, timezone
-from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 API = "https://api.github.com"
@@ -73,7 +72,16 @@ def main() -> None:
     runs = runs_payload.get("workflow_runs", [])
     body = build_status_body(pr, runs)
 
-    comments = request_json(f"{base}/issues/{pr_number}/comments?per_page=100", token)
+    comments = []
+    page = 1
+    while True:
+        batch = request_json(
+            f"{base}/issues/{pr_number}/comments?per_page=100&page={page}", token
+        )
+        comments.extend(batch)
+        if len(batch) < 100:
+            break
+        page += 1
     existing = next(
         (c for c in reversed(comments) if MARKER in (c.get("body") or "")),
         None,
