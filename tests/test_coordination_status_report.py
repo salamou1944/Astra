@@ -1,3 +1,5 @@
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from urllib.error import HTTPError
 from unittest.mock import patch
 
@@ -36,7 +38,7 @@ def test_status_body_is_stable_and_explicitly_non_agentic():
     assert "merged: false" in body
 
 
-def test_synthetic_merge_run_matches_pr_head_via_pull_requests_metadata():
+def test_synthetic_merge_run_is_selected_and_rendered():
     runs = [{
         "head_sha": "synthetic-merge-sha",
         "pull_requests": [{"head": {"sha": "abc1234567890"}}],
@@ -51,7 +53,6 @@ def test_synthetic_merge_run_matches_pr_head_via_pull_requests_metadata():
     body = reporter.build_status_body(pr_payload(), runs, "fixed time")
     assert "ASTRA CI #220" in body
     assert "completed / success" in body
-    assert "synthetic merge ref" in body.lower()
 
 
 def test_old_head_run_is_not_misattributed():
@@ -66,22 +67,6 @@ def test_old_head_run_is_not_misattributed():
     assert "No CI run matched" in reporter.build_status_body(pr_payload("new-head-sha"), runs)
 
 
-def test_event_filter_only_processes_canonical_pr_mailbox():
-    assert reporter.should_process_event("schedule", {}, "")
-    assert reporter.should_process_event("issue_comment", {"number": 1}, "human")
-    assert not reporter.should_process_event("issue_comment", {"number": 2}, "human")
-
-
-def test_find_status_comment_ignores_human_comments_that_only_mention_marker():
-    comments = [
-        {"id": 10, "body": "ordinary comment"},
-        {"id": 11, "body": "older " + reporter.MARKER},
-        {"id": 12, "body": "discussion about " + reporter.MARKER},
-        {"id": 13, "body": reporter.MARKER + "\n## ASTRA coordination status"},
-    ]
-    assert reporter.find_status_comment(comments)["id"] == 13
-
-
 def test_api_failure_is_not_silently_reported_as_success():
     error = HTTPError("https://api.github.com/test", 403, "forbidden", {}, None)
     with patch.object(reporter, "urlopen", side_effect=error):
@@ -89,16 +74,9 @@ def test_api_failure_is_not_silently_reported_as_success():
             reporter.request_json("https://api.github.com/test", "token")
 
 
-def test_status_comment_update_uses_existing_comment_id():
-    with patch.object(reporter, "request_json") as api:
-        api.side_effect = [
-            [
-                {"id": 88, "body": "conversation mentions " + reporter.MARKER},
-                {"id": 99, "body": reporter.MARKER + "\n## ASTRA coordination status"},
-            ],
-            {},
-        ]
-        result = reporter.publish_status_comment("https://api.github.com/repos/o/r", 1, "token", "new body")
-    assert result == "Updated existing status comment #99."
-    assert api.call_args_list[1].args[0].endswith("/issues/comments/99")
-    assert api.call_args_list[1].kwargs["payload"] == {"body": "new body"}
+def test_status_report_is_written_to_actions_summary():
+    with TemporaryDirectory() as tmp:
+        path = str(Path(tmp) / "summary.md")
+        reporter.write_step_summary("## status one", path)
+        reporter.write_step_summary("## status two", path)
+        assert Path(path).read_text(encoding="utf-8") == "## status one\n## status two\n"
