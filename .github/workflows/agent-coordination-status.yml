@@ -9,7 +9,8 @@ on:
 
 permissions:
   actions: read
-  pull-requests: write
+  issues: write
+  pull-requests: read
 
 concurrency:
   group: astra-coordination-status-pr1
@@ -17,9 +18,13 @@ concurrency:
 
 jobs:
   publish-status:
-    # Issue/PR #1 is the canonical mailbox. GITHUB_TOKEN-authored comments do
-    # not trigger workflows, so updating the status comment cannot loop.
-    if: ${{ github.event_name != 'issue_comment' || github.event.issue.number == 1 }}
+    # Canonical mailbox is PR #1 only. Reject ordinary issues and bot comments.
+    if: >-
+      ${{ github.event_name != 'issue_comment' ||
+          (github.event.issue.number == 1 &&
+           github.event.issue.pull_request &&
+           github.event.comment.user.type != 'Bot' &&
+           github.event.comment.user.login != 'github-actions[bot]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:

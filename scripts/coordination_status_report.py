@@ -32,9 +32,20 @@ def request_json(url: str, token: str, method: str = "GET", payload: dict | None
 
 
 def should_process_event(event_name: str, issue: dict, comment_user: str = "") -> bool:
-    # issue number 1 is the canonical mailbox in this repository.
-    # GITHUB_TOKEN-authored comments do not trigger workflows, preventing loops.
-    return event_name != "issue_comment" or issue.get("number") == 1
+    """Allow non-comment triggers; constrain issue_comment to the canonical PR mailbox.
+
+    The workflow repeats these checks as an independent event-level guard.
+    A blank author is rejected for comments because the event payload should
+    always include a user; unknown/malformed payloads must fail closed.
+    """
+    if event_name != "issue_comment":
+        return True
+    return (
+        issue.get("number") == 1
+        and bool(issue.get("pull_request"))
+        and bool(comment_user)
+        and not comment_user.endswith("[bot]")
+    )
 
 
 def find_status_comment(comments: list[dict]) -> dict | None:

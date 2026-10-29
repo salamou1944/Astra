@@ -66,10 +66,26 @@ def test_old_head_run_is_not_misattributed():
     assert "No CI run matched" in reporter.build_status_body(pr_payload("new-head-sha"), runs)
 
 
-def test_event_filter_only_processes_canonical_pr_mailbox():
+def test_event_filter_allows_schedule_and_manual_triggers():
     assert reporter.should_process_event("schedule", {}, "")
-    assert reporter.should_process_event("issue_comment", {"number": 1}, "human")
-    assert not reporter.should_process_event("issue_comment", {"number": 2}, "human")
+    assert reporter.should_process_event("workflow_dispatch", {}, "")
+
+
+def test_event_filter_allows_human_comment_on_canonical_pr_mailbox():
+    assert reporter.should_process_event(
+        "issue_comment", {"number": 1, "pull_request": {"url": "https://api.github.com/repos/o/r/pulls/1"}}, "human"
+    )
+
+
+@pytest.mark.parametrize("issue,user", [
+    ({"number": 2, "pull_request": {"url": "x"}}, "human"),
+    ({"number": 1}, "human"),  # ordinary issue, not a pull request
+    ({"number": 1, "pull_request": {"url": "x"}}, "github-actions[bot]"),
+    ({"number": 1, "pull_request": {"url": "x"}}, "another-bot[bot]"),
+    ({"number": 1, "pull_request": {"url": "x"}}, ""),
+])
+def test_event_filter_rejects_wrong_mailbox_non_pr_and_bot_or_missing_author(issue, user):
+    assert not reporter.should_process_event("issue_comment", issue, user)
 
 
 def test_find_status_comment_ignores_human_comments_that_only_mention_marker():
